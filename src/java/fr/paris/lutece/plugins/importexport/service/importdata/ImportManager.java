@@ -3,7 +3,9 @@ package fr.paris.lutece.plugins.importexport.service.importdata;
 import fr.paris.lutece.plugins.importexport.business.importdata.IImportElementDAO;
 import fr.paris.lutece.plugins.importexport.business.importdata.ImportElement;
 import fr.paris.lutece.plugins.importexport.business.importdata.ImportResult;
+import fr.paris.lutece.plugins.importexport.service.ImportExportPlugin;
 import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.daemon.ThreadLauncherDaemon;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 import java.io.File;
@@ -143,6 +145,7 @@ public class ImportManager
         RunnableImportService runnableImportService = new RunnableImportService( importSource, strTableName, plugin,
                 bUpdateExistingRows );
         _mapWorkingRunnableImportServices.put( admin.getUserId( ), runnableImportService );
+        ThreadLauncherDaemon.addItemToQueue( runnableImportService, strTableName, ImportExportPlugin.getPlugin( ) );
     }
 
     public static void notifyEndOfProcess( int nAdminId )
