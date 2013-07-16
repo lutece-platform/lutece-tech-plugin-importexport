@@ -4,6 +4,6 @@
 <jsp:useBean id="importData" scope="session" class="fr.paris.lutece.plugins.importexport.web.ImportDataJspBean" />
 
 <% importData.init( request, importData.RIGHT_IMPORT_DATA ); %>
-<%= importData.getImportData( request ) %>
+<% response.sendRedirect( importData.doImportData( request ) ); %>
 
 <%@ include file="../../AdminFooter.jsp" %>

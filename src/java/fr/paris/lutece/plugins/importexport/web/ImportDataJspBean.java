@@ -33,23 +33,33 @@
  */
 package fr.paris.lutece.plugins.importexport.web;
 
+import fr.paris.lutece.plugins.importexport.business.importdata.ImportResult;
 import fr.paris.lutece.plugins.importexport.service.ImportExportPlugin;
+import fr.paris.lutece.plugins.importexport.service.importdata.IImportSource;
+import fr.paris.lutece.plugins.importexport.service.importdata.ImportManager;
+import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
+import fr.paris.lutece.portal.service.message.AdminMessage;
+import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.web.admin.AdminFeaturesPageJspBean;
+import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 
 
@@ -68,13 +78,28 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
     // Properties
     private static final String PROPERTY_DATABASE_TABLES = "importexport.database.importableTableNames";
     private static final String PROPERTY_MESSAGE_IMPORT_DATA_PAGE_TITLE = "importexport.adminFeature.importdata_management.name";
+    private static final String PROPERTY_ASYNCHRONOUS_IMPORT_FILE_SIZE = "importexport.importdata.asynchronousImportFileSize";
+
+    // Messages
+    private static final String MESSAGE_FILE_NOT_VALIDE = "importexport.import_data.labelErrorFileFormatNotSupported";
+    private static final String MESSAGE_MANDATORY_FIELDS = "portal.util.message.mandatoryFields";
 
     // Marks
     private static final String MARK_DATABASE_TABLES = "databaseTables";
     private static final String MARK_LIST_PLUGIN = "listPlugin";
+    private static final String MARK_SESSION_IMPORT_RESULT = "importexport.session_import_result";
+
+    // Parameters
+    private static final String PARAMETER_FILE = "file";
+    private static final String PARAMETER_TABLE_NAME = "databaseTable";
+    private static final String PARAMETER_PLUGIN_NAME = "plugin";
+    private static final String PARAMETER_UPDATE_EXISTING_ROWS = "update";
 
     // Templates
     private static final String TEMPLATE_IMPORT_DATA = "admin/plugins/importexport/import_data.html";
+
+    private static final String JSP_URL_MANAGE_IMPORT = "jsp/admin/plugins/importexport/ManageImportData.jsp";
+    private static final String JSP_URL_IMPORT_PROCESSING = "jsp/admin/plugins/importexport/GetImportProcessing.jsp";
 
     /**
      * Creates a new ImportDataJspBean object.
@@ -90,6 +115,10 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
      */
     public String getImportData( HttpServletRequest request )
     {
+        // We remove any previous import result generated synchronously or asynchronously
+        request.getSession( ).removeAttribute( MARK_SESSION_IMPORT_RESULT );
+        ImportManager.getAsynchronousImportResult( AdminUserService.getAdminUser( request ).getUserId( ) );
+
         String strDatabaseTables = AppPropertiesService.getProperty( PROPERTY_DATABASE_TABLES );
         ReferenceList refList = new ReferenceList( );
         if ( StringUtils.isNotBlank( strDatabaseTables ) )
@@ -107,11 +136,16 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
         model.put( MARK_DATABASE_TABLES, refList );
         Collection<Plugin> listPlugins = PluginService.getPluginList( );
         ReferenceList refListPlugins = new ReferenceList( );
+        ReferenceItem refItemPlugin = new ReferenceItem( );
+        Plugin core = PluginService.getCore( );
+        refItemPlugin.setName( core.getName( ) );
+        refItemPlugin.setCode( core.getName( ) );
+        refListPlugins.add( refItemPlugin );
         for ( Plugin plugin : listPlugins )
         {
             if ( plugin.isDbPoolRequired( ) )
             {
-                ReferenceItem refItemPlugin = new ReferenceItem( );
+                refItemPlugin = new ReferenceItem( );
                 refItemPlugin.setName( plugin.getName( ) );
                 refItemPlugin.setCode( plugin.getName( ) );
                 refListPlugins.add( refItemPlugin );
@@ -125,6 +159,88 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
         setPageTitleProperty( PROPERTY_MESSAGE_IMPORT_DATA_PAGE_TITLE );
 
         return getAdminPage( template.getHtml( ) );
+    }
+
+    /**
+     * 
+     * @param request
+     * @return
+     */
+    public String doImportData( HttpServletRequest request )
+    {
+        AdminUser admin = AdminUserService.getAdminUser( request );
+        if ( ImportManager.hasImportInProcess( admin.getUserId( ) ) )
+        {
+            return AppPathService.getBaseUrl( request ) + JSP_URL_IMPORT_PROCESSING;
+        }
+
+        if ( request instanceof MultipartHttpServletRequest )
+        {
+            FileItem fileItem = ( (MultipartHttpServletRequest) request ).getFile( PARAMETER_FILE );
+            String strTableName = request.getParameter( PARAMETER_TABLE_NAME );
+            String strPluginName = request.getParameter( PARAMETER_PLUGIN_NAME );
+            Plugin plugin = PluginService.getPlugin( strPluginName );
+            if ( plugin == null )
+            {
+                plugin = PluginService.getCore( );
+            }
+            boolean bUpdateExistingRows = Boolean.parseBoolean( request.getParameter( PARAMETER_UPDATE_EXISTING_ROWS ) );
+
+            if ( fileItem == null || StringUtils.isEmpty( strTableName ) )
+            {
+                return AdminMessageService.getMessageUrl( request, MESSAGE_MANDATORY_FIELDS, AdminMessage.TYPE_ERROR );
+            }
+
+            IImportSource importSource = ImportManager.getImportSource( fileItem );
+            if ( importSource != null )
+            {
+                long lThresholdSize = AppPropertiesService.getPropertyLong( PROPERTY_ASYNCHRONOUS_IMPORT_FILE_SIZE,
+                        1048576l );
+                Locale locale = AdminUserService.getLocale( request );
+                if ( fileItem.getSize( ) < lThresholdSize )
+                {
+                    ImportResult result = ImportManager.doProcessImport( importSource, strTableName,
+                            bUpdateExistingRows, true, plugin, locale );
+                    request.getSession( ).setAttribute( MARK_SESSION_IMPORT_RESULT, result );
+                    return AppPathService.getBaseUrl( request ) + JSP_URL_MANAGE_IMPORT;
+                }
+                ImportManager.doProcessAsynchronousImport( importSource, strTableName, plugin, locale,
+                        bUpdateExistingRows, true, admin );
+                return AppPathService.getBaseUrl( request ) + JSP_URL_IMPORT_PROCESSING;
+
+            }
+            return AdminMessageService.getMessageUrl( request, MESSAGE_FILE_NOT_VALIDE, AdminMessage.TYPE_ERROR );
+        }
+        return AppPathService.getBaseUrl( request ) + JSP_URL_MANAGE_IMPORT;
+    }
+
+    public String getImportProcessing( HttpServletRequest request )
+    {
+        AdminUser admin = AdminUserService.getAdminUser( request );
+        if ( ImportManager.hasImportInProcess( admin.getUserId( ) ) )
+        {
+
+        }
+        return getImportResult( request );
+    }
+
+    public String getImportResult( HttpServletRequest request )
+    {
+        AdminUser admin = AdminUserService.getAdminUser( request );
+        ImportResult result = (ImportResult) request.getSession( ).getAttribute( MARK_SESSION_IMPORT_RESULT );
+        if ( result == null )
+        {
+            result = ImportManager.getAsynchronousImportResult( admin.getUserId( ) );
+            if ( result == null )
+            {
+                return getImportData( request );
+            }
+        }
+        else
+        {
+            request.getSession( ).removeAttribute( MARK_SESSION_IMPORT_RESULT );
+        }
+        return null;
     }
 
     /**

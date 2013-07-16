@@ -4,6 +4,8 @@ import fr.paris.lutece.plugins.importexport.business.importdata.ImportResult;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.util.AppLogService;
 
+import java.util.Locale;
+
 
 /**
  * Service that allow to import data. This service implements the Runnable
@@ -12,13 +14,15 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 public class RunnableImportService implements Runnable
 {
     public static final int STATUS_QUEUED = 0;
-    public static final int STATUS_WORKING = 0;
-    public static final int STATUS_FINISHED = 0;
+    public static final int STATUS_WORKING = 1;
+    public static final int STATUS_FINISHED = 2;
 
     private IImportSource _importSource;
     private String _strTableName;
     private Plugin _plugin;
+    private Locale _locale;
     private boolean _bUpdateExistingRows;
+    private boolean _bStopOnErrors;
     private int _nStatus = STATUS_QUEUED;
     private volatile ImportResult _importResult;
 
@@ -30,14 +34,18 @@ public class RunnableImportService implements Runnable
      *            database is in.
      * @param bUpdateExistingRows Indicates whether existing rows should be
      *            updated (true) or ignored (false)
+     * @param bStopOnErrors True to stop when an error occurred, false to skip
+     *            the item and continue
      */
-    public RunnableImportService( IImportSource importSource, String strTableName, Plugin plugin,
-            boolean bUpdateExistingRows )
+    public RunnableImportService( IImportSource importSource, String strTableName, Plugin plugin, Locale locale,
+            boolean bUpdateExistingRows, boolean bStopOnErrors )
     {
         this._importSource = importSource;
         this._strTableName = strTableName;
         this._plugin = plugin;
         this._bUpdateExistingRows = bUpdateExistingRows;
+        this._bStopOnErrors = bStopOnErrors;
+        this._locale = locale;
     }
 
     /**
@@ -49,7 +57,8 @@ public class RunnableImportService implements Runnable
         try
         {
             _nStatus = STATUS_WORKING;
-            _importResult = ImportManager.doProcessImport( _importSource, _strTableName, _bUpdateExistingRows, _plugin );
+            _importResult = ImportManager.doProcessImport( _importSource, _strTableName, _bUpdateExistingRows,
+                    _bStopOnErrors, _plugin, _locale );
         }
         catch ( Exception e )
         {

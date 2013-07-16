@@ -1,23 +1,26 @@
 package fr.paris.lutece.plugins.importexport.service.importdata;
 
-import fr.paris.lutece.plugins.importexport.business.importdata.IImportElementDAO;
 import fr.paris.lutece.plugins.importexport.business.importdata.ImportElement;
+import fr.paris.lutece.plugins.importexport.business.importdata.ImportElementDAO;
+import fr.paris.lutece.plugins.importexport.business.importdata.ImportMessage;
 import fr.paris.lutece.plugins.importexport.business.importdata.ImportResult;
 import fr.paris.lutece.plugins.importexport.service.ImportExportPlugin;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.daemon.ThreadLauncherDaemon;
 import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.util.AppException;
+import fr.paris.lutece.portal.service.util.AppLogService;
 
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
@@ -30,9 +33,6 @@ public class ImportManager
     private static final String CONSTANT_POINT = ".";
 
     private static Map<Integer, RunnableImportService> _mapWorkingRunnableImportServices = new HashMap<Integer, RunnableImportService>( );
-
-    @Autowired
-    private static IImportElementDAO _importElementDAO;
 
     /**
      * Register an import source factory
@@ -58,7 +58,7 @@ public class ImportManager
         String strFileExtention = null;
         if ( StringUtils.isNotEmpty( strFileName ) )
         {
-            strFileExtention = strFileName.substring( strFileName.lastIndexOf( CONSTANT_POINT ) );
+            strFileExtention = strFileName.substring( strFileName.lastIndexOf( CONSTANT_POINT ) + 1 );
         }
 
         if ( StringUtils.isEmpty( strFileExtention ) )
@@ -109,47 +109,175 @@ public class ImportManager
         return null;
     }
 
+    /**
+     * Do process the import of data from an import source to a given table in
+     * the database.
+     * @param importSource The import source to get data from
+     * @param strTableName The name of the table in the database to import data
+     *            to
+     * @param bUpdateExistingRows True to update existing rows, false to ignore
+     *            them
+     * @param bStopOnErrors True to stop when an error occurred, false to skip
+     *            the item and continue
+     * @param plugin The plugin to get the pool from
+     * @param locale The locale
+     * @return The result of the import
+     */
     public static ImportResult doProcessImport( IImportSource importSource, String strTableName,
-            boolean bUpdateExistingRows, Plugin plugin )
+            boolean bUpdateExistingRows, boolean bStopOnErrors, Plugin plugin, Locale locale )
     {
         List<ImportElement> listElements;
         int nCreatedElements = 0;
         int nUpdatedElements = 0;
         int nIgnoredElements = 0;
-        while ( ( listElements = importSource.getNextValues( ) ) != null )
+        ImportElementDAO importElementDAO = null;
+        try
         {
-            try
-            {
-                _importElementDAO.insertElement( listElements, strTableName, plugin );
-                nCreatedElements++;
-            }
-            catch ( SQLException e )
-            {
-                if ( bUpdateExistingRows )
-                {
-                    _importElementDAO.updateElement( listElements, strTableName, plugin );
-                    nUpdatedElements++;
-                }
-                else
-                {
-                    nIgnoredElements++;
-                }
-            }
+            importElementDAO = new ImportElementDAO( importSource.getColumnsName( ), strTableName, plugin, locale );
         }
-        return new ImportResult( nCreatedElements, nUpdatedElements, nIgnoredElements );
+        catch ( AppException e )
+        {
+            AppLogService.info( e.getMessage( ) );
+            return createErrorImportResult( e );
+        }
+
+        List<ImportMessage> listErrors = new ArrayList<ImportMessage>( );
+        try
+        {
+            // Wile there is values in the import source
+            while ( ( listElements = importSource.getNextValues( ) ) != null )
+            {
+                try
+                {
+                    // If the row already exists
+                    if ( importElementDAO.checkElementExists( listElements ) )
+                    {
+                        // If we must update existing rows
+                        if ( bUpdateExistingRows )
+                        {
+                            importElementDAO.updateElement( listElements );
+                            nUpdatedElements++;
+                        }
+                        else
+                        {
+                            nIgnoredElements++;
+                        }
+                    }
+                    else
+                    {
+                        // If it doesn't exist, we insert a new one 
+                        importElementDAO.insertElement( listElements );
+                        nCreatedElements++;
+                    }
+
+                }
+                catch ( AppException e )
+                {
+                    ImportMessage importMessage = new ImportMessage( e.getMessage( ), ImportMessage.STATUS_ERROR );
+                    listErrors.add( importMessage );
+                    if ( bStopOnErrors )
+                    {
+                        importElementDAO.rollbackTransaction( );
+                        return new ImportResult( nCreatedElements, nUpdatedElements, nIgnoredElements, listErrors );
+                    }
+                }
+                catch ( SQLException e )
+                {
+                    ImportMessage importMessage = new ImportMessage( e.getMessage( ), ImportMessage.STATUS_ERROR );
+                    listErrors.add( importMessage );
+                    if ( bStopOnErrors )
+                    {
+                        importElementDAO.rollbackTransaction( );
+                        return new ImportResult( nCreatedElements, nUpdatedElements, nIgnoredElements, listErrors );
+                    }
+                }
+            }
+            importElementDAO.commitTransaction( );
+        }
+        catch ( Exception e )
+        {
+            AppLogService.error( e.getMessage( ), e );
+            importElementDAO.rollbackTransaction( );
+        }
+        return new ImportResult( nCreatedElements, nUpdatedElements, nIgnoredElements, listErrors );
     }
 
+    /**
+     * Do process an asynchronous import of data from an import source to a
+     * given table in the database.
+     * @param importSource The import source to get data from
+     * @param strTableName The name of the table in the database to import data
+     *            to
+     * @param plugin The plugin to get the pool from
+     * @param locale The locale
+     * @param bUpdateExistingRows True to update existing rows, false to ignore
+     *            them
+     * @param bStopOnErrors True to stop when an error occurred, false to skip
+     *            the item and continue
+     * @param admin The admin user that started the import, or null if the
+     *            import was started by a daemon
+     */
     public static void doProcessAsynchronousImport( IImportSource importSource, String strTableName, Plugin plugin,
-            boolean bUpdateExistingRows, AdminUser admin )
+            Locale locale, boolean bUpdateExistingRows, boolean bStopOnErrors, AdminUser admin )
     {
         RunnableImportService runnableImportService = new RunnableImportService( importSource, strTableName, plugin,
-                bUpdateExistingRows );
-        _mapWorkingRunnableImportServices.put( admin.getUserId( ), runnableImportService );
+                locale, bUpdateExistingRows, bStopOnErrors );
+        if ( admin != null )
+        {
+            _mapWorkingRunnableImportServices.put( admin.getUserId( ), runnableImportService );
+        }
         ThreadLauncherDaemon.addItemToQueue( runnableImportService, strTableName, ImportExportPlugin.getPlugin( ) );
     }
 
-    public static void notifyEndOfProcess( int nAdminId )
+    /**
+     * Check if an admin user has an import processing
+     * @param nAdminId The id of the admin user
+     * @return True if the admin user has an import processing, false otherwise
+     */
+    public static boolean hasImportInProcess( int nAdminId )
     {
+        if ( nAdminId > 0 )
+        {
+            RunnableImportService runnableImportService = _mapWorkingRunnableImportServices.get( nAdminId );
+            if ( runnableImportService != null )
+            {
+                return runnableImportService.getServiceStatus( ) == RunnableImportService.STATUS_FINISHED;
+            }
+        }
+        return false;
+    }
 
+    /**
+     * Get the result of an asynchronous import. The import service is then
+     * removed from the list of current imports
+     * @param nAdminId The id of the user that started the import
+     * @return The result of the import, or null if no result were found
+     */
+    public static ImportResult getAsynchronousImportResult( int nAdminId )
+    {
+        RunnableImportService runnableImportService = _mapWorkingRunnableImportServices.get( nAdminId );
+        if ( runnableImportService.getServiceStatus( ) == RunnableImportService.STATUS_FINISHED )
+        {
+            ImportResult result = runnableImportService.getImportResult( );
+            _mapWorkingRunnableImportServices.remove( runnableImportService );
+            return result;
+        }
+        return null;
+    }
+
+    /**
+     * Creates a new import result from a throwable. The import result has one
+     * error message, which contain the message of the throwable.
+     * @param throwable The throwable to get the message from
+     * @return An import result
+     */
+    private static ImportResult createErrorImportResult( Throwable throwable )
+    {
+        ImportResult result = new ImportResult( );
+        ImportMessage message = new ImportMessage( throwable.getMessage( ), ImportMessage.STATUS_ERROR );
+        List<ImportMessage> listMessages = new ArrayList<ImportMessage>( );
+        listMessages.add( message );
+        result.setListImportMessage( listMessages );
+        return result;
     }
 }

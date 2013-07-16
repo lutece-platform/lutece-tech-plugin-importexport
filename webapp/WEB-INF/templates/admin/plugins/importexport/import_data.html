@@ -1,5 +1,5 @@
 <div class="row- fluid">
-	<form class="form-horizontal" action="jsp/plugins/importexport/DoImportData.jsp" >
+	<form class="form-horizontal" action="jsp/admin/plugins/importexport/DoImportData.jsp" method="post" enctype="multipart/form-data" >
 		<fieldset>
 			<legend>#i18n{importexport.adminFeature.importdata_management.name}</legend>
 			<div class="control-group">
@@ -12,21 +12,21 @@
 			<div class="control-group">
 				<label class="control-label" for="databaseTable">#i18n{importexport.import_data.labelDatabaseTable}</label>
 				<div class="controls">
-					<@combo items=databaseTables name="databaseTable" />
+					<@combo items=databaseTables name="databaseTable" default_value="" />
 					<span class="help-block">#i18n{importexport.import_data.labelDatabaseTableHelp}</span>
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="file">#i18n{importexport.import_data.labelUpdate}</label>
 				<div class="controls">
-					<input type="text" name="update" id="update">
+					<input type="checkbox" name="update" id="update" >
 					<span class="help-block">#i18n{importexport.import_data.labelUpdateHelp}</span>
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="plugin">#i18n{importexport.import_data.labelPlugin}</label>
 				<div class="controls">
-					<@combo items=listPlugin name="plugin" />
+					<@combo items=listPlugin name="plugin" default_value="" />
 					<span class="help-block">#i18n{importexport.import_data.labelPluginHelp}</span>
 				</div>
 			</div>
