@@ -1,0 +1,27 @@
+<div class="row-fluid">
+	<fieldset>
+		<legend>#i18n{importexport.import_result.pageTitle}</legend>
+		<table class="table">
+			<tr class="info">
+				<td>
+					${result.createdElements} #i18n{importexport.import_result.labelCreated}<br />
+					${result.updatedElements} #i18n{importexport.import_result.labelUpdated}<br />
+					${result.ignoredElements} #i18n{importexport.import_result.labelIgnored}
+				</td>
+			</tr>
+			<#list result.listImportMessage as message>
+				<tr <#if message.status == 1>class="error"</#if>>
+					<td>
+						${message.message}
+					</td>
+				</tr>
+			</#list>
+		</table>
+		<br />
+		<div class="form-horizontal form-actions">
+			<a class="btn btn-primary btn-small" href="jsp/admin/plugins/importexport/ManageImportData.jsp">
+				<i class="icon-remove-circle icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}
+			</a>
+		</div>
+	</fieldset>
+</div>

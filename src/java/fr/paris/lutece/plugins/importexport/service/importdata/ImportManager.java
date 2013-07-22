@@ -241,7 +241,7 @@ public class ImportManager
             RunnableImportService runnableImportService = _mapWorkingRunnableImportServices.get( nAdminId );
             if ( runnableImportService != null )
             {
-                return runnableImportService.getServiceStatus( ) == RunnableImportService.STATUS_FINISHED;
+                return runnableImportService.getServiceStatus( ) != RunnableImportService.STATUS_FINISHED;
             }
         }
         return false;

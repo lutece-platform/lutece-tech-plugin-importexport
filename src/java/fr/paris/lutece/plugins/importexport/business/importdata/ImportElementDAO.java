@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
@@ -58,11 +59,13 @@ public class ImportElementDAO
     private static final String CONSTANT_SQL_BYTE = "byte";
     private static final String CONSTANT_SQL_BLOB = "blob";
     private static final String CONSTANT_STRING_NULL = "null";
+    private static final String CONSTANT_HEXA_START = "0x";
 
     private static final String ERROR_EMPTY_TABLE_NAME = "importexport.import_data.errors.emptyTableName";
     private static final String ERROR_EMPTY_COLUMN_LIST = "importexport.import_data.errors.emptyColumnList";
     private static final String ERROR_MESSAGE_TRANSACTION_CLOSED = "importexport.import_data.errors.transactionClosed";
     private static final String ERROR_MESSAGE_WRONG_LIST_ELEMENTS_SIZE = "importexport.import_data.errors.emptyColumnList";
+    private static final String ERROR_MESSAGE_COLUMN_NOT_FOUND = "importexport.import_data.errors.columnNotFound";
 
     private String _strSqlInsert;
     private String _strSqlUpdate;
@@ -98,10 +101,10 @@ public class ImportElementDAO
         }
 
         // We create the list of columns of the required table
-        this._listTableColumns = getTableColumns( listTableColumns, strTableName, plugin );
         this._strTableName = strTableName;
         this._plugin = plugin;
         this._locale = locale;
+        this._listTableColumns = getTableColumns( listTableColumns, strTableName, plugin );
         _transaction = new Transaction( );
         if ( _transaction.getStatus( ) != Transaction.OPENED )
         {
@@ -199,7 +202,7 @@ public class ImportElementDAO
                     throw new AppException( I18nService.getLocalizedString( ERROR_MESSAGE_WRONG_LIST_ELEMENTS_SIZE,
                             _locale ) );
                 }
-                addSqlParameter( nIndex++, element.getColumnName( ), tableColumn.getColumnType( ) );
+                addSqlParameter( nIndex++, element.getValue( ), tableColumn.getColumnType( ) );
             }
         }
         // We now add primary keys
@@ -214,7 +217,7 @@ public class ImportElementDAO
                     throw new AppException( I18nService.getLocalizedString( ERROR_MESSAGE_WRONG_LIST_ELEMENTS_SIZE,
                             _locale ) );
                 }
-                addSqlParameter( nIndex++, element.getColumnName( ), tableColumn.getColumnType( ) );
+                addSqlParameter( nIndex++, element.getValue( ), tableColumn.getColumnType( ) );
             }
         }
         _transaction.executeStatement( );
@@ -315,14 +318,21 @@ public class ImportElementDAO
         {
             Iterator<TableColumn> iterator = listColumns.iterator( );
             TableColumn tableColumn;
-            while ( ( tableColumn = iterator.next( ) ) != null )
+            try
             {
-                if ( StringUtils.equals( strColumnName, tableColumn.getColumnName( ) ) )
+                while ( ( tableColumn = iterator.next( ) ) != null )
                 {
-                    listColumnsSorted.add( tableColumn );
-                    iterator.remove( );
-                    break;
+                    if ( StringUtils.equals( strColumnName, tableColumn.getColumnName( ) ) )
+                    {
+                        listColumnsSorted.add( tableColumn );
+                        iterator.remove( );
+                        break;
+                    }
                 }
+            }
+            catch ( NoSuchElementException e )
+            {
+                throw new AppException( I18nService.getLocalizedString( ERROR_MESSAGE_COLUMN_NOT_FOUND, _locale ) );
             }
         }
 
@@ -487,6 +497,12 @@ public class ImportElementDAO
                 }
                 else
                 {
+                    // If the blob contains the sequence "0x" that indicates that it is encoded in hex, we remove it since we do know it is hex
+                    // Furthermore, the 'x' character is not a valid hex character, so we can safely remove it
+                    if ( strElementValue.startsWith( CONSTANT_HEXA_START ) )
+                    {
+                        strElementValue = strElementValue.substring( 2 );
+                    }
                     try
                     {
                         blobItem = Hex.decodeHex( strElementValue.toCharArray( ) );
@@ -692,7 +708,7 @@ public class ImportElementDAO
             }
         }
         sbSql.append( SQL_QUERY_WHERE );
-        bIsFirstColumn = false;
+        bIsFirstColumn = true;
         for ( TableColumn tableColumn : _listTableColumns )
         {
             if ( tableColumn.getIsPrimaryKey( ) )

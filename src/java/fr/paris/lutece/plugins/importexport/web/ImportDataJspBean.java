@@ -88,6 +88,7 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
     private static final String MARK_DATABASE_TABLES = "databaseTables";
     private static final String MARK_LIST_PLUGIN = "listPlugin";
     private static final String MARK_SESSION_IMPORT_RESULT = "importexport.session_import_result";
+    private static final String MARK_RESULT = "result";
 
     // Parameters
     private static final String PARAMETER_FILE = "file";
@@ -97,9 +98,12 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
 
     // Templates
     private static final String TEMPLATE_IMPORT_DATA = "admin/plugins/importexport/import_data.html";
+    private static final String TEMPLATE_IMPORT_WAITING = "admin/plugins/importexport/import_waiting.html";
+    private static final String TEMPLATE_IMPORT_RESULT = "admin/plugins/importexport/import_result.html";
 
     private static final String JSP_URL_MANAGE_IMPORT = "jsp/admin/plugins/importexport/ManageImportData.jsp";
     private static final String JSP_URL_IMPORT_PROCESSING = "jsp/admin/plugins/importexport/GetImportProcessing.jsp";
+    private static final String JSP_URL_IMPORT_RESULT = "jsp/admin/plugins/importexport/GetImportResult.jsp";
 
     /**
      * Creates a new ImportDataJspBean object.
@@ -198,7 +202,7 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
                     ImportResult result = ImportManager.doProcessImport( importSource, strTableName,
                             bUpdateExistingRows, true, plugin, locale );
                     request.getSession( ).setAttribute( MARK_SESSION_IMPORT_RESULT, result );
-                    return AppPathService.getBaseUrl( request ) + JSP_URL_MANAGE_IMPORT;
+                    return AppPathService.getBaseUrl( request ) + JSP_URL_IMPORT_RESULT;
                 }
                 ImportManager.doProcessAsynchronousImport( importSource, strTableName, plugin, locale,
                         bUpdateExistingRows, true, admin );
@@ -210,16 +214,26 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
         return AppPathService.getBaseUrl( request ) + JSP_URL_MANAGE_IMPORT;
     }
 
+    /**
+     * @param request
+     * @return
+     */
     public String getImportProcessing( HttpServletRequest request )
     {
         AdminUser admin = AdminUserService.getAdminUser( request );
         if ( ImportManager.hasImportInProcess( admin.getUserId( ) ) )
         {
-
+            HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_IMPORT_WAITING,
+                    AdminUserService.getLocale( request ) );
+            return getAdminPage( template.getHtml( ) );
         }
         return getImportResult( request );
     }
 
+    /**
+     * @param request
+     * @return
+     */
     public String getImportResult( HttpServletRequest request )
     {
         AdminUser admin = AdminUserService.getAdminUser( request );
@@ -236,7 +250,13 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
         {
             request.getSession( ).removeAttribute( MARK_SESSION_IMPORT_RESULT );
         }
-        return null;
+
+        Map<String, Object> model = new HashMap<String, Object>( );
+        model.put( MARK_RESULT, result );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_IMPORT_RESULT,
+                AdminUserService.getLocale( request ), model );
+
+        return getAdminPage( template.getHtml( ) );
     }
 
     /**
