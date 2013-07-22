@@ -144,7 +144,7 @@ public class ImportManager
         List<ImportMessage> listErrors = new ArrayList<ImportMessage>( );
         try
         {
-            // Wile there is values in the import source
+            // While there is values in the import source
             while ( ( listElements = importSource.getNextValues( ) ) != null )
             {
                 try
@@ -198,6 +198,8 @@ public class ImportManager
         {
             AppLogService.error( e.getMessage( ), e );
             importElementDAO.rollbackTransaction( );
+            ImportMessage importMessage = new ImportMessage( e.getMessage( ), ImportMessage.STATUS_ERROR );
+            listErrors.add( importMessage );
         }
         return new ImportResult( nCreatedElements, nUpdatedElements, nIgnoredElements, listErrors );
     }
@@ -256,7 +258,8 @@ public class ImportManager
     public static ImportResult getAsynchronousImportResult( int nAdminId )
     {
         RunnableImportService runnableImportService = _mapWorkingRunnableImportServices.get( nAdminId );
-        if ( runnableImportService != null && runnableImportService.getServiceStatus( ) == RunnableImportService.STATUS_FINISHED )
+        if ( runnableImportService != null
+                && runnableImportService.getServiceStatus( ) == RunnableImportService.STATUS_FINISHED )
         {
             ImportResult result = runnableImportService.getImportResult( );
             _mapWorkingRunnableImportServices.remove( runnableImportService );

@@ -95,6 +95,7 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
     private static final String PARAMETER_TABLE_NAME = "databaseTable";
     private static final String PARAMETER_PLUGIN_NAME = "plugin";
     private static final String PARAMETER_UPDATE_EXISTING_ROWS = "update";
+    private static final String PARAMETER_STOP_ON_ERRORS = "stopOnErrors";
 
     // Templates
     private static final String TEMPLATE_IMPORT_DATA = "admin/plugins/importexport/import_data.html";
@@ -185,6 +186,7 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
             String strPluginName = request.getParameter( PARAMETER_PLUGIN_NAME );
             Plugin plugin = PluginService.getPlugin( strPluginName );
             boolean bUpdateExistingRows = Boolean.parseBoolean( request.getParameter( PARAMETER_UPDATE_EXISTING_ROWS ) );
+            boolean bStopOnErrors = Boolean.parseBoolean( request.getParameter( PARAMETER_STOP_ON_ERRORS ) );
 
             if ( fileItem == null || StringUtils.isEmpty( strTableName ) )
             {
@@ -200,7 +202,7 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
                 if ( fileItem.getSize( ) < lThresholdSize )
                 {
                     ImportResult result = ImportManager.doProcessImport( importSource, strTableName,
-                            bUpdateExistingRows, true, plugin, locale );
+                            bUpdateExistingRows, bStopOnErrors, plugin, locale );
                     request.getSession( ).setAttribute( MARK_SESSION_IMPORT_RESULT, result );
                     return AppPathService.getBaseUrl( request ) + JSP_URL_IMPORT_RESULT;
                 }
