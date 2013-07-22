@@ -256,7 +256,7 @@ public class ImportManager
     public static ImportResult getAsynchronousImportResult( int nAdminId )
     {
         RunnableImportService runnableImportService = _mapWorkingRunnableImportServices.get( nAdminId );
-        if ( runnableImportService.getServiceStatus( ) == RunnableImportService.STATUS_FINISHED )
+        if ( runnableImportService != null && runnableImportService.getServiceStatus( ) == RunnableImportService.STATUS_FINISHED )
         {
             ImportResult result = runnableImportService.getImportResult( );
             _mapWorkingRunnableImportServices.remove( runnableImportService );

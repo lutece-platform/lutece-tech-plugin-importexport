@@ -117,7 +117,7 @@ public class CSVImportSource implements IImportSource
             AppLogService.error( e.getMessage( ), e );
             return null;
         }
-        if ( strLine.length > listColumnsName.size( ) )
+        if ( strLine != null && strLine.length == listColumnsName.size( ) )
         {
             List<ImportElement> listElements = new ArrayList<ImportElement>( strLine.length );
             int i = 0;

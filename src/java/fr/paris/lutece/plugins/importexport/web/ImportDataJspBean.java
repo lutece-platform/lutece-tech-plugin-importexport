@@ -180,10 +180,6 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
             String strTableName = request.getParameter( PARAMETER_TABLE_NAME );
             String strPluginName = request.getParameter( PARAMETER_PLUGIN_NAME );
             Plugin plugin = PluginService.getPlugin( strPluginName );
-            if ( plugin == null )
-            {
-                plugin = PluginService.getCore( );
-            }
             boolean bUpdateExistingRows = Boolean.parseBoolean( request.getParameter( PARAMETER_UPDATE_EXISTING_ROWS ) );
 
             if ( fileItem == null || StringUtils.isEmpty( strTableName ) )

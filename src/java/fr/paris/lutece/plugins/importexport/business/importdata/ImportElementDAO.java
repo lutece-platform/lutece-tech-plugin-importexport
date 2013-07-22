@@ -39,7 +39,7 @@ public class ImportElementDAO
     private static final String SQL_QUERY_WHERE = " WHERE ";
     private static final String SQL_QUERY_AND = " AND ";
 
-    private static final String SQL_QUERY_GET_PRIMARY_KEYS = " SELECT column_name, data_type FROM information_schema.column WHERE table_name = ? ";
+    private static final String SQL_QUERY_GET_PRIMARY_KEYS = " SELECT column_name, data_type FROM information_schema.columns WHERE table_name = ? ";
 
     private static final String CONSTANT_QUESTION_MARK = "?";
     private static final String CONSTANT_COMA = ",";
@@ -150,7 +150,7 @@ public class ImportElementDAO
                 throw new AppException(
                         I18nService.getLocalizedString( ERROR_MESSAGE_WRONG_LIST_ELEMENTS_SIZE, _locale ) );
             }
-            addSqlParameter( nIndex++, element.getColumnName( ), tableColumn.getColumnType( ) );
+            addSqlParameter( nIndex++, element.getValue( ), tableColumn.getColumnType( ) );
         }
         _transaction.executeStatement( );
     }
@@ -293,6 +293,7 @@ public class ImportElementDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_GET_PRIMARY_KEYS, plugin );
         daoUtil.setString( 1, strTableName );
+        daoUtil.executeQuery( );
         List<TableColumn> listColumns = new ArrayList<TableColumn>( listColumnNames.size( ) );
         String strPrimaryKeyName = listColumnNames.get( 0 );
         while ( daoUtil.next( ) )
@@ -637,11 +638,11 @@ public class ImportElementDAO
         StringBuilder sbSql = new StringBuilder( SQL_QUERY_INSERT_INTO );
         sbSql.append( _strTableName );
         sbSql.append( CONSTANT_OPEN_PARENTHESIS );
-        sbSql.append( _listTableColumns.get( 0 ) );
+        sbSql.append( _listTableColumns.get( 0 ).getColumnName( ) );
         for ( int i = 1; i < nListSize; i++ )
         {
             sbSql.append( CONSTANT_COMA );
-            sbSql.append( _listTableColumns.get( i ) );
+            sbSql.append( _listTableColumns.get( i ).getColumnName( ) );
         }
         sbSql.append( CONSTANT_CLOSE_PARENTHESIS );
         sbSql.append( SQL_QUERY_VALUES );
@@ -725,11 +726,11 @@ public class ImportElementDAO
             return _sqlCheckElement;
         }
         StringBuilder sbSql = new StringBuilder( SQL_QUERY_SELECT );
-        sbSql.append( _listTableColumns.get( 0 ) );
+        sbSql.append( _listTableColumns.get( 0 ).getColumnName( ) );
         sbSql.append( SQL_QUERY_FROM );
         sbSql.append( _strTableName );
         sbSql.append( SQL_QUERY_WHERE );
-        sbSql.append( _listTableColumns.get( 0 ) );
+        sbSql.append( _listTableColumns.get( 0 ).getColumnName( ) );
         sbSql.append( SQL_QUERY_EQUALS );
         _sqlCheckElement = sbSql.toString( );
         return _sqlCheckElement;
