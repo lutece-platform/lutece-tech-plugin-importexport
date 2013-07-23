@@ -21,16 +21,19 @@ public class ImportMessage
 
     private String _strMessage;
     private int _nStatus;
+    private int _nItemNumber;
 
     /**
      * Creates a new import message
      * @param strMessage The message
      * @param nStatus The {@link #setStatus(int) status} of the message
+     * @param nItemNumber The number of the imported item
      */
-    public ImportMessage( String strMessage, int nStatus )
+    public ImportMessage( String strMessage, int nStatus, int nItemNumber )
     {
         this._strMessage = strMessage;
         this._nStatus = nStatus;
+        this._nItemNumber = nItemNumber;
     }
 
     /**
@@ -80,5 +83,24 @@ public class ImportMessage
     public void setStatus( int nStatus )
     {
         this._nStatus = nStatus;
+    }
+
+    /**
+     * Get the number of the imported item in the data source
+     * @return the number of the imported item in the data source
+     */
+    public int getItemNumber( )
+    {
+        return _nItemNumber;
+    }
+
+    /**
+     * Set the number of the imported item in the data source. This number
+     * should be unique for every row of a data source
+     * @param nItemNumber The imported item number
+     */
+    public void setItemNumber( int nItemNumber )
+    {
+        this._nItemNumber = nItemNumber;
     }
 }

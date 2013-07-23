@@ -32,6 +32,7 @@ public class RunnableImportService implements Runnable
      * @param strTableName The name of the table
      * @param plugin The plugin associated with the pool the table of the
      *            database is in.
+     * @param locale The locale to display messages in
      * @param bUpdateExistingRows Indicates whether existing rows should be
      *            updated (true) or ignored (false)
      * @param bStopOnErrors True to stop when an error occurred, false to skip

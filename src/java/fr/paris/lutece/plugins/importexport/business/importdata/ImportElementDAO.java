@@ -232,6 +232,19 @@ public class ImportElementDAO
      */
     public boolean checkElementExists( List<ImportElement> listElements ) throws SQLException
     {
+        if ( listElements == null || listElements.size( ) != _listTableColumns.size( ) )
+        {
+            AppException appException = new AppException( I18nService.getLocalizedString(
+                    ERROR_MESSAGE_WRONG_LIST_ELEMENTS_SIZE, _locale ) );
+            int nElemNumber = 0;
+            if ( listElements != null )
+            {
+                nElemNumber = listElements.size( );
+            }
+            AppLogService.info( appException.getMessage( ) + " expected " + _listTableColumns.size( )
+                    + " elements, found " + nElemNumber );
+            throw appException;
+        }
         DAOUtil daoUtil = new DAOUtil( getSqlCheckElementExists( ), _plugin );
         boolean bResult = false;
         try

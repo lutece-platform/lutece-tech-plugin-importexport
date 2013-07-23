@@ -1,5 +1,8 @@
 package fr.paris.lutece.plugins.importexport.business.importdata;
 
+/**
+ * Types of SQL columns
+ */
 public enum ColumnType
 {
     TYPE_STRING,

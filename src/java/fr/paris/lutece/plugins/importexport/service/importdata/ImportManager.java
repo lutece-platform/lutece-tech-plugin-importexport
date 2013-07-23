@@ -130,6 +130,7 @@ public class ImportManager
         int nCreatedElements = 0;
         int nUpdatedElements = 0;
         int nIgnoredElements = 0;
+        int nItemNumber = 0;
         ImportElementDAO importElementDAO = null;
         try
         {
@@ -147,6 +148,7 @@ public class ImportManager
             // While there is values in the import source
             while ( ( listElements = importSource.getNextValues( ) ) != null )
             {
+                nItemNumber++;
                 try
                 {
                     // If the row already exists
@@ -173,21 +175,29 @@ public class ImportManager
                 }
                 catch ( AppException e )
                 {
-                    ImportMessage importMessage = new ImportMessage( e.getMessage( ), ImportMessage.STATUS_ERROR );
+                    ImportMessage importMessage = new ImportMessage( e.getMessage( ), ImportMessage.STATUS_ERROR,
+                            nItemNumber );
                     listErrors.add( importMessage );
+                    nIgnoredElements++;
                     if ( bStopOnErrors )
                     {
                         importElementDAO.rollbackTransaction( );
+                        nCreatedElements = 0;
+                        nUpdatedElements = 0;
                         return new ImportResult( nCreatedElements, nUpdatedElements, nIgnoredElements, listErrors );
                     }
                 }
                 catch ( SQLException e )
                 {
-                    ImportMessage importMessage = new ImportMessage( e.getMessage( ), ImportMessage.STATUS_ERROR );
+                    ImportMessage importMessage = new ImportMessage( e.getMessage( ), ImportMessage.STATUS_ERROR,
+                            nItemNumber );
                     listErrors.add( importMessage );
+                    nIgnoredElements++;
                     if ( bStopOnErrors )
                     {
                         importElementDAO.rollbackTransaction( );
+                        nCreatedElements = 0;
+                        nUpdatedElements = 0;
                         return new ImportResult( nCreatedElements, nUpdatedElements, nIgnoredElements, listErrors );
                     }
                 }
@@ -198,7 +208,9 @@ public class ImportManager
         {
             AppLogService.error( e.getMessage( ), e );
             importElementDAO.rollbackTransaction( );
-            ImportMessage importMessage = new ImportMessage( e.getMessage( ), ImportMessage.STATUS_ERROR );
+            nCreatedElements = 0;
+            nUpdatedElements = 0;
+            ImportMessage importMessage = new ImportMessage( e.getMessage( ), ImportMessage.STATUS_ERROR, nItemNumber );
             listErrors.add( importMessage );
         }
         return new ImportResult( nCreatedElements, nUpdatedElements, nIgnoredElements, listErrors );
@@ -277,7 +289,7 @@ public class ImportManager
     private static ImportResult createErrorImportResult( Throwable throwable )
     {
         ImportResult result = new ImportResult( );
-        ImportMessage message = new ImportMessage( throwable.getMessage( ), ImportMessage.STATUS_ERROR );
+        ImportMessage message = new ImportMessage( throwable.getMessage( ), ImportMessage.STATUS_ERROR, 0 );
         List<ImportMessage> listMessages = new ArrayList<ImportMessage>( );
         listMessages.add( message );
         result.setListImportMessage( listMessages );

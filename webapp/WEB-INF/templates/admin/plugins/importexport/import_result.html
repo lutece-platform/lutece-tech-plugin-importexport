@@ -12,7 +12,7 @@
 			<#list result.listImportMessage as message>
 				<tr <#if message.status == 1>class="error"</#if>>
 					<td>
-						${message.message}
+						${message.itemNumber} : ${message.message}
 					</td>
 				</tr>
 			</#list>

@@ -167,9 +167,9 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
     }
 
     /**
-     * 
-     * @param request
-     * @return
+     * Do import data into the database
+     * @param request The request
+     * @return The next URL to redirect to
      */
     public String doImportData( HttpServletRequest request )
     {
@@ -207,7 +207,7 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
                     return AppPathService.getBaseUrl( request ) + JSP_URL_IMPORT_RESULT;
                 }
                 ImportManager.doProcessAsynchronousImport( importSource, strTableName, plugin, locale,
-                        bUpdateExistingRows, true, admin );
+                        bUpdateExistingRows, bStopOnErrors, admin );
                 return AppPathService.getBaseUrl( request ) + JSP_URL_IMPORT_PROCESSING;
 
             }
@@ -217,8 +217,11 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
     }
 
     /**
-     * @param request
-     * @return
+     * Get the waiting page if an import has been started by the user and has
+     * not terminated yet. If there is no running import, then the import result
+     * page is displayed
+     * @param request The request
+     * @return The HTML content to display
      */
     public String getImportProcessing( HttpServletRequest request )
     {
@@ -233,8 +236,11 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
     }
 
     /**
-     * @param request
-     * @return
+     * Get the import result page. If the user has already displayed results of
+     * imports, or if he has not started any import then page to create import
+     * is displayed instead
+     * @param request The request
+     * @return The HTML content to display
      */
     public String getImportResult( HttpServletRequest request )
     {
