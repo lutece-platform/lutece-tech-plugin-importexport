@@ -8,3 +8,5 @@ VALUES ('IMPORTDATA_MANAGEMENT','importexport.adminFeature.importdata_management
 -- Init  table core_user_right
 --
 INSERT INTO core_user_right (id_right,id_user) VALUES ('IMPORTDATA_MANAGEMENT',1);
+INSERT INTO core_datastore VALUES ( 'importexport.daemon.importDaemon.onStartUp', 'false' );
+INSERT INTO core_datastore VALUES ( 'importexport.daemon.importDaemon.interval', '86400' );

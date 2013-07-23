@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,7 @@ import au.com.bytecode.opencsv.CSVReader;
 public class CSVImportSource implements IImportSource
 {
     private CSVReader _csvReader;
+    private Reader _reader;
     private List<String> _listColumnsName;
 
     /**
@@ -40,23 +42,22 @@ public class CSVImportSource implements IImportSource
     {
         if ( fileItem != null )
         {
-            InputStreamReader inputStreamReader = null;
 
             try
             {
-                inputStreamReader = new InputStreamReader( fileItem.getInputStream( ) );
+                _reader = new InputStreamReader( fileItem.getInputStream( ) );
             }
             catch ( IOException e )
             {
                 AppLogService.error( e.getMessage( ), e );
             }
-            if ( inputStreamReader != null )
+            if ( _reader != null )
             {
                 Character cSeparator = StringUtils.isNotEmpty( strCSVSeparator ) ? strCSVSeparator.charAt( 0 )
                         : CSVReader.DEFAULT_SEPARATOR;
                 Character cQuoteChar = StringUtils.isNotEmpty( strCSVQuoteChar ) ? strCSVQuoteChar.charAt( 0 )
                         : CSVReader.DEFAULT_QUOTE_CHARACTER;
-                _csvReader = new CSVReader( inputStreamReader, cSeparator, cQuoteChar );
+                _csvReader = new CSVReader( _reader, cSeparator, cQuoteChar );
             }
         }
     }
@@ -77,12 +78,12 @@ public class CSVImportSource implements IImportSource
         {
             try
             {
-                FileReader fileReader = new FileReader( file );
+                _reader = new FileReader( file );
                 Character cSeparator = StringUtils.isNotEmpty( strCSVSeparator ) ? strCSVSeparator.charAt( 0 )
                         : CSVReader.DEFAULT_SEPARATOR;
                 Character cQuoteChar = StringUtils.isNotEmpty( strCSVQuoteChar ) ? strCSVQuoteChar.charAt( 0 )
                         : CSVReader.DEFAULT_QUOTE_CHARACTER;
-                _csvReader = new CSVReader( fileReader, cSeparator, cQuoteChar );
+                _csvReader = new CSVReader( _reader, cSeparator, cQuoteChar );
             }
             catch ( FileNotFoundException e )
             {
@@ -190,6 +191,7 @@ public class CSVImportSource implements IImportSource
             {
                 _csvReader.close( );
                 _csvReader = null;
+                _reader.close( );
             }
             catch ( IOException e )
             {
@@ -206,14 +208,7 @@ public class CSVImportSource implements IImportSource
     {
         if ( _csvReader != null )
         {
-            try
-            {
-                _csvReader.close( );
-            }
-            catch ( IOException e )
-            {
-                AppLogService.error( e.getMessage( ), e );
-            }
+            close( );
         }
         super.finalize( );
     }

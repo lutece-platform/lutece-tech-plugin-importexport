@@ -30,4 +30,18 @@
 	 		<feature-url>jsp/admin/plugins/importexport/ManageImportData.jsp</feature-url>
 		</admin-feature>
 	</admin-features>
+	<daemons>
+		<daemon>
+			<daemon-id>importDaemon</daemon-id>
+            <daemon-name>
+                importexport.daemon.importDaemon.name
+			</daemon-name>
+            <daemon-description>
+                importexport.daemon.importDaemon.description
+			</daemon-description>
+            <daemon-class>
+                fr.paris.lutece.plugins.importexport.service.importdata.daemon.ImportDaemon
+			</daemon-class>
+		</daemon>
+	</daemons>
 </plug-in>

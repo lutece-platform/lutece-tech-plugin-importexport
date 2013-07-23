@@ -91,7 +91,7 @@ public class ImportManager
         String strFileExtention = null;
         if ( StringUtils.isNotEmpty( strFileName ) )
         {
-            strFileExtention = strFileName.substring( strFileName.lastIndexOf( CONSTANT_POINT ) );
+            strFileExtention = strFileName.substring( strFileName.lastIndexOf( CONSTANT_POINT ) + 1 );
         }
 
         if ( StringUtils.isEmpty( strFileExtention ) )

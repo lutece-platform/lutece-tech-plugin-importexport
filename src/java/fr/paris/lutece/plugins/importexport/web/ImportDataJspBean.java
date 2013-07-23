@@ -38,6 +38,7 @@ import fr.paris.lutece.plugins.importexport.service.ImportExportPlugin;
 import fr.paris.lutece.plugins.importexport.service.importdata.IImportSource;
 import fr.paris.lutece.plugins.importexport.service.importdata.ImportManager;
 import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -106,6 +107,8 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
     private static final String JSP_URL_IMPORT_PROCESSING = "jsp/admin/plugins/importexport/GetImportProcessing.jsp";
     private static final String JSP_URL_IMPORT_RESULT = "jsp/admin/plugins/importexport/GetImportResult.jsp";
 
+    private static final String CONSTANT_SEMICOLON = ";";
+
     /**
      * Creates a new ImportDataJspBean object.
      */
@@ -128,7 +131,7 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
         ReferenceList refList = new ReferenceList( );
         if ( StringUtils.isNotBlank( strDatabaseTables ) )
         {
-            for ( String strDatabaseTable : strDatabaseTables.split( ";" ) )
+            for ( String strDatabaseTable : strDatabaseTables.split( CONSTANT_SEMICOLON ) )
             {
                 ReferenceItem refItem = new ReferenceItem( );
                 refItem.setCode( strDatabaseTable );
@@ -170,8 +173,10 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
      * Do import data into the database
      * @param request The request
      * @return The next URL to redirect to
+     * @throws AccessDeniedException If the table to import data in has not been
+     *             declared as an importable table
      */
-    public String doImportData( HttpServletRequest request )
+    public String doImportData( HttpServletRequest request ) throws AccessDeniedException
     {
         AdminUser admin = AdminUserService.getAdminUser( request );
         if ( ImportManager.hasImportInProcess( admin.getUserId( ) ) )
@@ -191,6 +196,22 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
             if ( fileItem == null || StringUtils.isEmpty( strTableName ) )
             {
                 return AdminMessageService.getMessageUrl( request, MESSAGE_MANDATORY_FIELDS, AdminMessage.TYPE_ERROR );
+            }
+            boolean bAuthorizedTable = false;
+            String strDatabaseTables = AppPropertiesService.getProperty( PROPERTY_DATABASE_TABLES );
+            for ( String strDatabaseTable : strDatabaseTables.split( CONSTANT_SEMICOLON ) )
+            {
+                if ( StringUtils.equals( strDatabaseTable, strTableName ) )
+                {
+                    bAuthorizedTable = true;
+                    break;
+                }
+            }
+
+            if ( !bAuthorizedTable )
+            {
+                throw new AccessDeniedException( "The database table '" + strTableName
+                        + "' has NOT been decalred as an importable table" );
             }
 
             IImportSource importSource = ImportManager.getImportSource( fileItem );

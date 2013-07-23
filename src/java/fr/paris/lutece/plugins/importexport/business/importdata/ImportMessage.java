@@ -103,4 +103,30 @@ public class ImportMessage
     {
         this._nItemNumber = nItemNumber;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString( )
+    {
+        StringBuilder sbMessage = new StringBuilder( );
+        if ( _nStatus == STATUS_ERROR )
+        {
+            sbMessage.append( "Error : " );
+        }
+        else if ( _nStatus == STATUS_SKIPPED )
+        {
+            sbMessage.append( "Skipped : " );
+        }
+        else if ( _nStatus == STATUS_OK )
+        {
+            sbMessage.append( "Ok : " );
+        }
+        sbMessage.append( _nItemNumber );
+        sbMessage.append( ", " );
+        sbMessage.append( _strMessage );
+
+        return sbMessage.toString( );
+    }
 }
