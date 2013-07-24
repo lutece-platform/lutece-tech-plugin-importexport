@@ -1,0 +1,40 @@
+<div class="row-fluid">
+	<form class="form-horizontal" action="jsp/admin/plugins/importexport/GetExportColumns.jsp">
+		<fieldset>
+			<legend>#i18n{importexport.adminFeature.exportdata.name}</legend>
+			<ul class="nav nav-tabs">
+				<li>
+					<a href="jsp/admin/plugins/importexport/ManageImportData.jsp">#i18n{importexport.import_data.pageTitle}</a>
+				</li>
+				<li class="active">
+					<a href="jsp/admin/plugins/importexport/GetExportData.jsp">#i18n{importexport.export_data.pageTitle}</a>
+				</li>
+			</ul>
+			<div class="control-group">
+				<label class="control-label" for="databaseTable">#i18n{importexport.export_data.labelDatabaseTable}</label>
+				<div class="controls">
+					<@combo items=databaseTables name="databaseTable" default_value="" />
+					<span class="help-block">#i18n{importexport.export_data.labelDatabaseTableHelp}</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="plugin">#i18n{importexport.export_data.labelPlugin}</label>
+				<div class="controls">
+					<@combo items=listPlugin name="plugin" default_value="" />
+					<span class="help-block">#i18n{importexport.export_data.labelPluginHelp}</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="xslExport">#i18n{importexport.export_data.labelXslExport}</label>
+				<div class="controls">
+					<@combo items=listXslExport name="xslExport" default_value="" />
+				</div>
+			</div>
+			<div class="form-actions">
+				<button class="btn btn-small btn-primary">
+					<i class="icon-white icon-download">&nbsp;</i>&nbsp;#i18n{importexport.export_data.labelChooseColumns}
+				</button>
+			</div>
+		</fieldset>
+	</form>
+</div>

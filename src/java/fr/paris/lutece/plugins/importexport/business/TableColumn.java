@@ -1,4 +1,6 @@
-package fr.paris.lutece.plugins.importexport.business.importdata;
+package fr.paris.lutece.plugins.importexport.business;
+
+
 
 /**
  * Describes an SQL column

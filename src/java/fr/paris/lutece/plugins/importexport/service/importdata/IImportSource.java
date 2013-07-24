@@ -1,6 +1,6 @@
 package fr.paris.lutece.plugins.importexport.service.importdata;
 
-import fr.paris.lutece.plugins.importexport.business.importdata.ImportElement;
+import fr.paris.lutece.plugins.importexport.business.ImportExportElement;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public interface IImportSource
      * @return The list of values, or null if there is no more or if an error
      *         occurs while reading values in the data source
      */
-    List<ImportElement> getNextValues( );
+    List<ImportExportElement> getNextValues( );
 
     /**
      * Get the name of columns of this data source

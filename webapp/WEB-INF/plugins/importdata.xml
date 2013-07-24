@@ -11,7 +11,7 @@
    <provider>importexport.plugin.provider</provider>
    <provider-url>http://lutece.paris.fr</provider-url>
    <icon-url>images/admin/skin/plugins/importexport/importdata.png</icon-url>
-   <copyright>Copyright 2001-2009 Mairie de Paris</copyright>
+   <copyright>Copyright 2001-2013 Mairie de Paris</copyright>
 	<core-version-dependency>
 		<min-core-version>4.1.0</min-core-version>
 		<max-core-version/>	
@@ -23,9 +23,9 @@
 	<!-- Administration interface parameters -->
 	<admin-features>
 		<admin-feature>
-			<feature-id>IMPORTDATA_MANAGEMENT</feature-id>
-			<feature-title>importexport.adminFeature.importdata_management.name</feature-title>
-	 		<feature-description>importexport.adminFeature.importdata_management.description</feature-description>
+			<feature-id>IMPORTEXPORT_MANAGEMENT</feature-id>
+			<feature-title>importexport.adminFeature.importexport_management.name</feature-title>
+	 		<feature-description>importexport.adminFeature.importexport_management.description</feature-description>
 	 		<feature-level>1</feature-level>
 	 		<feature-url>jsp/admin/plugins/importexport/ManageImportData.jsp</feature-url>
 		</admin-feature>

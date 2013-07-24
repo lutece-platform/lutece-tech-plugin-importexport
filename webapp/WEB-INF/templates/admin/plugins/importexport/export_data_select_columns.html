@@ -1,0 +1,34 @@
+<div class="row-fluid">
+	<form class="form-horizontal" action="jsp/admin/plugins/importexport/DoExportData.jsp">
+		<fieldset>
+			<legend>#i18n{importexport.adminFeature.exportdata.name}</legend>
+			<ul class="nav nav-tabs">
+				<li>
+					<a href="jsp/admin/plugins/importexport/ManageImportData.jsp">#i18n{importexport.import_data.pageTitle}</a>
+				</li>
+				<li class="active">
+					<a href="jsp/admin/plugins/importexport/GetExportData.jsp">#i18n{importexport.export_data.pageTitle}</a>
+				</li>
+			</ul>
+			<#list columns as column>
+				<div class="control-group">
+					<div class="controls">
+						<input type="checkbox" name="columns" id="${column}" value="${column}" />
+						<label class="checkbox" for="${column}">${column}</label>
+					</div>
+				</div>
+			</#list>
+			<div class="form-actions">
+				<input type="hidden" name="pluginName" value="${pluginName!}" />
+				<input type="hidden" name="databaseTable" value="${databaseTable}" />
+				<input type="hidden" name="xslExport" value="${xslExport}" />
+				<button class="btn btn-small btn-primary">
+					<i class="icon-white icon-download">&nbsp;</i>&nbsp;#i18n{importexport.export_data.labelExport}
+				</button>
+				<a class="btn btn-small" href="jsp/admin/plugins/importexport/GetExportData.jsp">
+					<i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelCancel}
+				</a>
+			</div>
+		</fieldset>
+	</form>
+</div>

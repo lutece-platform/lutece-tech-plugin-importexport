@@ -1,9 +1,9 @@
-package fr.paris.lutece.plugins.importexport.business.importdata;
+package fr.paris.lutece.plugins.importexport.business;
 
 /**
- * Describes a value of a row to import
+ * Describes a value of a cell of a row to import or export
  */
-public class ImportElement
+public class ImportExportElement
 {
     private String _strColumnName;
     private String _strValue;

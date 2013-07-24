@@ -69,7 +69,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class ImportDataJspBean extends AdminFeaturesPageJspBean
 {
-    public static final String RIGHT_IMPORT_DATA = "IMPORTDATA_MANAGEMENT";
+    public static final String RIGHT_IMPORT_DATA = "IMPORTEXPORT_MANAGEMENT";
 
     /**
      * Generated serial version UID
@@ -78,7 +78,7 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
 
     // Properties
     private static final String PROPERTY_DATABASE_TABLES = "importexport.database.importableTableNames";
-    private static final String PROPERTY_MESSAGE_IMPORT_DATA_PAGE_TITLE = "importexport.adminFeature.importdata_management.name";
+    private static final String PROPERTY_MESSAGE_IMPORT_DATA_PAGE_TITLE = "importexport.import_data.pageTitle";
     private static final String PROPERTY_ASYNCHRONOUS_IMPORT_FILE_SIZE = "importexport.importdata.asynchronousImportFileSize";
 
     // Messages

@@ -1,7 +1,7 @@
 package fr.paris.lutece.plugins.importexport.service.importdata;
 
-import fr.paris.lutece.plugins.importexport.business.importdata.ImportElement;
-import fr.paris.lutece.plugins.importexport.business.importdata.ImportElementDAO;
+import fr.paris.lutece.plugins.importexport.business.ImportExportElement;
+import fr.paris.lutece.plugins.importexport.business.importdata.ImportDataDAO;
 import fr.paris.lutece.plugins.importexport.business.importdata.ImportMessage;
 import fr.paris.lutece.plugins.importexport.business.importdata.ImportResult;
 import fr.paris.lutece.plugins.importexport.service.ImportExportPlugin;
@@ -126,15 +126,15 @@ public class ImportManager
     public static ImportResult doProcessImport( IImportSource importSource, String strTableName,
             boolean bUpdateExistingRows, boolean bStopOnErrors, Plugin plugin, Locale locale )
     {
-        List<ImportElement> listElements;
+        List<ImportExportElement> listElements;
         int nCreatedElements = 0;
         int nUpdatedElements = 0;
         int nIgnoredElements = 0;
         int nItemNumber = 0;
-        ImportElementDAO importElementDAO = null;
+        ImportDataDAO importElementDAO = null;
         try
         {
-            importElementDAO = new ImportElementDAO( importSource.getColumnsName( ), strTableName, plugin, locale );
+            importElementDAO = new ImportDataDAO( importSource.getColumnsName( ), strTableName, plugin, locale );
         }
         catch ( AppException e )
         {

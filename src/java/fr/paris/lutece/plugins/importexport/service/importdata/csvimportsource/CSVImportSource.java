@@ -1,6 +1,6 @@
 package fr.paris.lutece.plugins.importexport.service.importdata.csvimportsource;
 
-import fr.paris.lutece.plugins.importexport.business.importdata.ImportElement;
+import fr.paris.lutece.plugins.importexport.business.ImportExportElement;
 import fr.paris.lutece.plugins.importexport.service.importdata.IImportSource;
 import fr.paris.lutece.portal.service.util.AppLogService;
 
@@ -96,7 +96,7 @@ public class CSVImportSource implements IImportSource
      * {@inheritDoc}
      */
     @Override
-    public List<ImportElement> getNextValues( )
+    public List<ImportExportElement> getNextValues( )
     {
         // We check that the reader has been initialized
         if ( _csvReader == null )
@@ -120,7 +120,7 @@ public class CSVImportSource implements IImportSource
         }
         if ( strLine != null )
         {
-            List<ImportElement> listElements = new ArrayList<ImportElement>( strLine.length );
+            List<ImportExportElement> listElements = new ArrayList<ImportExportElement>( strLine.length );
             if ( strLine.length != listColumnsName.size( ) )
             {
                 // If the number of elements is not correct, then we return an empty list.
@@ -129,7 +129,7 @@ public class CSVImportSource implements IImportSource
             int i = 0;
             for ( String strColumnTitle : listColumnsName )
             {
-                ImportElement element = new ImportElement( );
+                ImportExportElement element = new ImportExportElement( );
                 element.setColumnName( strColumnTitle );
                 element.setValue( strLine[i] );
                 listElements.add( element );
