@@ -12,17 +12,27 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Export manager
+ */
 public class ExportManager
 {
     private static ExportDAO _exportDAO = new ExportDAO( );
     private static Map<Integer, RunnableExportService> _mapRunningImports = new HashMap<Integer, RunnableExportService>( );
 
     /**
+     * Private constructor
+     */
+    private ExportManager( )
+    {
+    }
+
+    /**
      * Do process the export of a table of the database
      * @param strTableName The name of the database table to export
      * @param listColumns The list of columns to export
      * @param nXSLStylesheetId The id of the XSL export stylesheet to use to
-     *            format data retreived from the database. If the id of the XSL
+     *            format data retrieved from the database. If the id of the XSL
      *            stylesheet is 0, then the row XML is returned
      * @param plugin The plugin to get the pool of
      * @return The string containing the formatted values of the table of the

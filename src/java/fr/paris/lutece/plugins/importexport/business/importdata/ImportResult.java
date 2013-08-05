@@ -8,9 +8,9 @@ import java.util.List;
  */
 public class ImportResult
 {
-    int _nCreatedElements;
-    int _nUpdatedElements;
-    int _nIgnoredElements;
+    private int _nCreatedElements;
+    private int _nUpdatedElements;
+    private int _nIgnoredElements;
 
     List<ImportMessage> _listImportMessage;
 

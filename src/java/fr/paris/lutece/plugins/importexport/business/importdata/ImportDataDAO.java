@@ -156,7 +156,7 @@ public class ImportDataDAO extends AbstractImportExportDAO
      * @throws AppException If an error occurred during the update
      * @throws SQLException If an error occurred with the database
      */
-    public void updateElement( List<ImportExportElement> listElements ) throws SQLException
+    public void updateElement( List<ImportExportElement> listElements ) throws AppException, SQLException
     {
         if ( _transaction == null || _transaction.getStatus( ) != Transaction.OPENED )
         {
@@ -397,15 +397,16 @@ public class ImportDataDAO extends AbstractImportExportDAO
                 }
                 else
                 {
+                    String strValue = strElementValue;
                     // If the blob contains the sequence "0x" that indicates that it is encoded in hex, we remove it since we do know it is hex
                     // Furthermore, the 'x' character is not a valid hex character, so we can safely remove it
-                    if ( strElementValue.startsWith( CONSTANT_HEXA_START ) )
+                    if ( strValue.startsWith( CONSTANT_HEXA_START ) )
                     {
-                        strElementValue = strElementValue.substring( 2 );
+                        strValue = strValue.substring( CONSTANT_HEXA_START.length( ) );
                     }
                     try
                     {
-                        blobItem = Hex.decodeHex( strElementValue.toCharArray( ) );
+                        blobItem = Hex.decodeHex( strValue.toCharArray( ) );
                     }
                     catch ( DecoderException e )
                     {
@@ -414,6 +415,8 @@ public class ImportDataDAO extends AbstractImportExportDAO
                 }
                 _transaction.getStatement( ).setBytes( nIndex, blobItem );
                 break;
+            default:
+                AppLogService.error( "Unknown column type : " + columnType );
             }
         }
         catch ( SQLException e )
@@ -531,6 +534,8 @@ public class ImportDataDAO extends AbstractImportExportDAO
                 }
                 daoUtil.setBytes( nIndex, blobItem );
                 break;
+            default:
+                AppLogService.error( "Unknown column type : " + columnType );
             }
         }
         catch ( SQLException e )
@@ -653,21 +658,6 @@ public class ImportDataDAO extends AbstractImportExportDAO
     }
 
     /**
-     * Finalize the DAO. If the transaction has not been closed, then it is
-     * rolled backed and closed
-     */
-    @Override
-    protected void finalize( ) throws Throwable
-    {
-        if ( _transaction != null )
-        {
-            _transaction.rollback( );
-            _transaction = null;
-        }
-        super.finalize( );
-    }
-
-    /**
      * Check if a string is null, empty, blank or equals to the 'null' string.
      * @param strString The string to check
      * @return True if the string null, empty, blank or equals to the 'null'
@@ -676,5 +666,20 @@ public class ImportDataDAO extends AbstractImportExportDAO
     private boolean isStringBlankOrNull( String strString )
     {
         return StringUtils.isBlank( strString ) || StringUtils.equalsIgnoreCase( strString, CONSTANT_STRING_NULL );
+    }
+
+    /**
+     * Finalize the DAO. If the transaction has not been closed, then it is
+     * rolled backed and closed
+     * @throws Throwable If an exception is thrown
+     */
+    @Override
+    protected void finalize( ) throws Throwable
+    {
+        if ( _transaction != null )
+        {
+            _transaction.rollback( );
+        }
+        super.finalize( );
     }
 }

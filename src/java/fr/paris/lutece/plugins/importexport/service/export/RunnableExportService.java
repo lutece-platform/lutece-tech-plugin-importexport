@@ -53,8 +53,10 @@ public class RunnableExportService implements Runnable
     public void run( )
     {
         FileWriter fileWriter = null;
+        BufferedWriter bufferedWriter = null;
         try
         {
+            // We flag the runnable as working
             _nStatus = STATUS_WORKING;
             String strExport = ExportManager.doProcessExport( _strTableName, _listColumns, _nXSLStylesheetId, _plugin );
             File file = new File( getExportedFileName( ) );
@@ -64,10 +66,12 @@ public class RunnableExportService implements Runnable
             }
             file.createNewFile( );
             fileWriter = new FileWriter( file );
-            BufferedWriter bufferedWriter = new BufferedWriter( fileWriter );
+            bufferedWriter = new BufferedWriter( fileWriter );
             bufferedWriter.write( strExport );
             bufferedWriter.flush( );
+            // This close both the file writer and the buffered writer
             bufferedWriter.close( );
+            bufferedWriter = null;
             fileWriter = null;
         }
         catch ( Exception e )
@@ -76,6 +80,18 @@ public class RunnableExportService implements Runnable
         }
         finally
         {
+            // We finnaly close writers that has not already been closed
+            if ( bufferedWriter != null )
+            {
+                try
+                {
+                    bufferedWriter.close( );
+                }
+                catch ( IOException e )
+                {
+                    AppLogService.error( e.getMessage( ), e );
+                }
+            }
             if ( fileWriter != null )
             {
                 try
@@ -87,6 +103,7 @@ public class RunnableExportService implements Runnable
                     AppLogService.error( e.getMessage( ), e );
                 }
             }
+            // We flag the runnable as finished
             _nStatus = STATUS_FINISHED;
         }
     }

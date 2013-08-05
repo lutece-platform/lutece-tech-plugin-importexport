@@ -42,7 +42,7 @@ public class ImportDaemon extends Daemon
             {
                 strSourcePath = strSourcePath + CONSTANT_SLASH;
             }
-            String strFiles[] = directory.list( );
+            String[] strFiles = directory.list( );
             if ( strFiles != null && strFiles.length > 0 )
             {
                 String strDatabaseTables = AppPropertiesService.getProperty( PROPERTY_DATABASE_TABLES );

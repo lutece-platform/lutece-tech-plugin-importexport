@@ -35,6 +35,13 @@ public class ImportManager
     private static Map<Integer, RunnableImportService> _mapWorkingRunnableImportServices = new HashMap<Integer, RunnableImportService>( );
 
     /**
+     * Private constructor
+     */
+    private ImportManager( )
+    {
+    }
+
+    /**
      * Register an import source factory
      * @param importSourceFactory The import source factory to register
      */
@@ -274,7 +281,7 @@ public class ImportManager
                 && runnableImportService.getServiceStatus( ) == RunnableImportService.STATUS_FINISHED )
         {
             ImportResult result = runnableImportService.getImportResult( );
-            _mapWorkingRunnableImportServices.remove( runnableImportService );
+            _mapWorkingRunnableImportServices.remove( nAdminId );
             return result;
         }
         return null;
