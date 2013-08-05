@@ -19,7 +19,8 @@ import org.apache.commons.lang.StringUtils;
  */
 public abstract class AbstractImportExportDAO
 {
-    protected static final String SQL_QUERY_GET_PRIMARY_KEYS = " SELECT column_name, data_type FROM information_schema.columns WHERE table_name = ? ";
+    protected static final String SQL_QUERY_GET_COLUMNS = " SELECT DISTINCT column_name, data_type FROM information_schema.columns WHERE table_name = ? ";
+    protected static final String SQL_QUERY_GET_COLUMNS_NAME = " SELECT DISTINCT column_name FROM information_schema.columns WHERE table_name = ? ";
 
     private static final String CONSTANT_SQL_INT = "int";
     private static final String CONSTANT_SQL_LONG = "bigint";
@@ -49,7 +50,7 @@ public abstract class AbstractImportExportDAO
     protected static List<TableColumn> getTableColumns( List<String> listColumnNames, String strTableName,
             Plugin plugin, Locale locale ) throws AppException
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_GET_PRIMARY_KEYS, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_GET_COLUMNS, plugin );
         daoUtil.setString( 1, strTableName );
         daoUtil.executeQuery( );
         List<TableColumn> listColumns = new ArrayList<TableColumn>( listColumnNames.size( ) );
@@ -103,7 +104,7 @@ public abstract class AbstractImportExportDAO
      */
     public static List<String> getTableColumnsNames( String strTableName, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_GET_PRIMARY_KEYS, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_GET_COLUMNS_NAME, plugin );
         daoUtil.setString( 1, strTableName );
         daoUtil.executeQuery( );
         List<String> listColumnsName = new ArrayList<String>( );

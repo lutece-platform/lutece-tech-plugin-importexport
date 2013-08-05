@@ -10,7 +10,7 @@
    <description>importexport.plugin.description</description>
    <provider>importexport.plugin.provider</provider>
    <provider-url>http://lutece.paris.fr</provider-url>
-   <icon-url>images/admin/skin/plugins/importexport/importdata.png</icon-url>
+   <icon-url>images/admin/skin/plugins/importexport/importexport.png</icon-url>
    <copyright>Copyright 2001-2013 Mairie de Paris</copyright>
 	<core-version-dependency>
 		<min-core-version>4.1.0</min-core-version>
@@ -41,6 +41,18 @@
 			</daemon-description>
             <daemon-class>
                 fr.paris.lutece.plugins.importexport.service.importdata.daemon.ImportDaemon
+			</daemon-class>
+		</daemon>
+		<daemon>
+			<daemon-id>exportCleanerDaemon</daemon-id>
+            <daemon-name>
+                importexport.daemon.exportCleanerDaemon.name
+			</daemon-name>
+            <daemon-description>
+                importexport.daemon.exportCleanerDaemon.description
+			</daemon-description>
+            <daemon-class>
+                fr.paris.lutece.plugins.importexport.service.export.daemon.ExportCleanerDaemon
 			</daemon-class>
 		</daemon>
 	</daemons>

@@ -11,8 +11,7 @@ public class ImportResult
     private int _nCreatedElements;
     private int _nUpdatedElements;
     private int _nIgnoredElements;
-
-    List<ImportMessage> _listImportMessage;
+    private List<ImportMessage> _listImportMessage;
 
     /**
      * Default constructor

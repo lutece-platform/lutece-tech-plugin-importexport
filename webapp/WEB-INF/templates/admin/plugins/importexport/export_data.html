@@ -1,7 +1,7 @@
 <div class="row-fluid">
 	<form class="form-horizontal" action="jsp/admin/plugins/importexport/GetExportColumns.jsp">
 		<fieldset>
-			<legend>#i18n{importexport.adminFeature.exportdata.name}</legend>
+			<legend>#i18n{importexport.export_data.pageTitle}</legend>
 			<ul class="nav nav-tabs">
 				<li>
 					<a href="jsp/admin/plugins/importexport/ManageImportData.jsp">#i18n{importexport.import_data.pageTitle}</a>
@@ -28,6 +28,7 @@
 				<label class="control-label" for="xslExport">#i18n{importexport.export_data.labelXslExport}</label>
 				<div class="controls">
 					<@combo items=listXslExport name="xslExport" default_value="" />
+					<span class="help-block">#i18n{importexport.export_data.labelXslExportHelp}</span>
 				</div>
 			</div>
 			<div class="form-actions">

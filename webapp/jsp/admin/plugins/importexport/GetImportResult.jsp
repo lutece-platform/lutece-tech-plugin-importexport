@@ -6,4 +6,4 @@
 <% importData.init( request, importData.RIGHT_IMPORT_DATA ); %>
 <%= importData.getImportResult( request ) %>
 
-<%@ include file="../../AdminFooter.jsp
+<%@ include file="../../AdminFooter.jsp" %>

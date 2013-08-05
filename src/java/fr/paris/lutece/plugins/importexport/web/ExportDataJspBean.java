@@ -3,6 +3,7 @@ package fr.paris.lutece.plugins.importexport.web;
 import fr.paris.lutece.plugins.importexport.business.export.ExportDAO;
 import fr.paris.lutece.plugins.importexport.service.ImportExportPlugin;
 import fr.paris.lutece.plugins.importexport.service.export.ExportManager;
+import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.xsl.XslExportHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
@@ -11,6 +12,8 @@ import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.web.admin.AdminFeaturesPageJspBean;
 import fr.paris.lutece.util.ReferenceItem;
@@ -40,12 +43,13 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
     private static final long serialVersionUID = -8290123143145394692L;
 
     private static final String PROPERTY_DATABASE_TABLES = "importexport.database.exportableTableNames";
-    private static final String PROPERTY_MESSAGE_EXPORT_DATA_PAGE_TITLE = "importexport.adminFeature.exportdata.name";
+    private static final String PROPERTY_MESSAGE_EXPORT_DATA_PAGE_TITLE = "importexport.export_data.pageTitle";
+    private static final String PROPERTY_MESSAGE_EXPORT_DATA_COLUMNS_SELECTION_PAGE_TITLE = "importexport.export_data.columns_selection.pageTitle";
 
     private static final String MARK_DATABASE_TABLES = "databaseTables";
     private static final String MARK_LIST_PLUGIN = "listPlugin";
     private static final String MARK_COLUMNS = "columns";
-    private static final String MARK_LIST_XSL_EXPORT = "";
+    private static final String MARK_LIST_XSL_EXPORT = "listXslExport";
 
     private static final String PARAMETER_TABLE_NAME = "databaseTable";
     private static final String PARAMETER_PLUGIN_NAME = "plugin";
@@ -54,8 +58,11 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
 
     private static final String TEMPLATE_EXPORT_DATA = "admin/plugins/importexport/export_data.html";
     private static final String TEMPLATE_EXPORT_DATA_SELECT_COLUMNS = "admin/plugins/importexport/export_data_select_columns.html";
+    private static final String TEMPLATE_EXPORT_WAITING = "admin/plugins/importexport/export_waiting.html";
 
     private static final String MESSAGE_ERROR_NO_COLUMN_SELECTED = "importexport.export_data.error.noColumnSelected";
+
+    private static final String JSP_URL_EXPORT_WAITING_PAGE = "jsp/admin/plugins/importexport/GetExportProcessing.jsp";
 
     private static final String CONSTANT_SEMICOLON = ";";
 
@@ -156,7 +163,7 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_EXPORT_DATA_SELECT_COLUMNS,
                 AdminUserService.getLocale( request ), model );
 
-        setPageTitleProperty( PROPERTY_MESSAGE_EXPORT_DATA_PAGE_TITLE );
+        setPageTitleProperty( PROPERTY_MESSAGE_EXPORT_DATA_COLUMNS_SELECTION_PAGE_TITLE );
 
         return getAdminPage( template.getHtml( ) );
     }
@@ -164,13 +171,13 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
     /**
      * Do export data from a database table and start a download of the export
      * @param request The request
-     * @param response The response
+     * @return The next URL to redirect to
      * @throws AccessDeniedException If the database table has not been declared
      *             as an exportable table
      * @throws IOException If an IOException occurs
      */
-    public void doExportData( HttpServletRequest request, HttpServletResponse response ) throws AccessDeniedException,
-            IOException
+    public String doExportData( HttpServletRequest request )
+            throws AccessDeniedException, IOException
     {
         String strTableName = request.getParameter( PARAMETER_TABLE_NAME );
         String strPluginName = request.getParameter( PARAMETER_PLUGIN_NAME );
@@ -195,9 +202,8 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
         String[] strColumns = request.getParameterValues( PARAMETER_COLUMNS );
         if ( strColumns == null || strColumns.length == 0 )
         {
-            response.sendRedirect( AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_NO_COLUMN_SELECTED,
-                    AdminMessage.TYPE_STOP ) );
-            return;
+            return AdminMessageService
+                    .getMessageUrl( request, MESSAGE_ERROR_NO_COLUMN_SELECTED, AdminMessage.TYPE_STOP );
         }
         List<String> listColumns = new ArrayList<String>( strColumns.length );
         for ( String strColumn : strColumns )
@@ -212,7 +218,53 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
         }
         ExportManager.registerAsynchronousExport( strTableName, listColumns, nXslExportId, plugin,
                 AdminUserService.getAdminUser( request ) );
-        // TODO : redirect to the waiting page
-        //        response.sendRedirect(  );
+        return AppPathService.getBaseUrl( request ) + JSP_URL_EXPORT_WAITING_PAGE;
+    }
+
+    /**
+     * Get the waiting page that indicates that an export is processing, or the
+     * result page if the export has ended.
+     * @param request The request
+     * @param response The response
+     * @return The HTML content to display, or null if a download has be
+     *         initialized
+     */
+    public String getExportProcessing( HttpServletRequest request, HttpServletResponse response )
+    {
+        AdminUser admin = AdminUserService.getAdminUser( request );
+        if ( ExportManager.hasExportInProcess( admin.getUserId( ) ) )
+        {
+            HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_EXPORT_WAITING,
+                    AdminUserService.getLocale( request ) );
+            return getAdminPage( template.getHtml( ) );
+        }
+
+        return getExportResult( request, response );
+    }
+
+    /**
+     * Get the page that display the result of an import, or the export data
+     * main page if no export result is available for the given user
+     * @param request The request
+     * @param response The response
+     * @return The HTML content to display, or null if a download has be
+     *         initialized
+     */
+    public String getExportResult( HttpServletRequest request, HttpServletResponse response )
+    {
+        String strFileURl = ExportManager.getExportResult( AdminUserService.getAdminUser( request ) );
+        if ( StringUtils.isNotBlank( strFileURl ) )
+        {
+            try
+            {
+                response.sendRedirect( AppPathService.getBaseUrl( request ) + strFileURl );
+                return null;
+            }
+            catch ( IOException e )
+            {
+                AppLogService.error( e.getMessage( ), e );
+            }
+        }
+        return getExportData( request );
     }
 }

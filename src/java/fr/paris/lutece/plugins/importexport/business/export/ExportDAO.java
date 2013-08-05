@@ -83,7 +83,7 @@ public class ExportDAO extends AbstractImportExportDAO
         }
         sbSqlSelect.append( SQL_QUERY_FROM );
         sbSqlSelect.append( strTableName );
-        return null;
+        return sbSqlSelect.toString( );
     }
 
     /**
@@ -96,32 +96,49 @@ public class ExportDAO extends AbstractImportExportDAO
      */
     private String getElementValue( DAOUtil daoUtil, ColumnType columnType, int nIndex )
     {
+        String strResult = StringUtils.EMPTY;
         switch ( columnType )
         {
         case TYPE_INT:
             int nValue = daoUtil.getInt( nIndex );
-            return Integer.toString( nValue );
+            strResult = Integer.toString( nValue );
+            break;
         case TYPE_STRING:
-            return daoUtil.getString( nIndex );
+            strResult = daoUtil.getString( nIndex );
+            break;
         case TYPE_LONG:
             long lValue = daoUtil.getLong( nIndex );
-            return Long.toString( lValue );
+            strResult = Long.toString( lValue );
+            break;
         case TYPE_TIMESTAMP:
             Timestamp timestamp = daoUtil.getTimestamp( nIndex );
-            return Long.toString( timestamp.getTime( ) );
+            if ( timestamp != null )
+            {
+                strResult = Long.toString( timestamp.getTime( ) );
+            }
+            break;
         case TYPE_DATE:
             Date date = daoUtil.getDate( nIndex );
-            return DateFormat.getDateInstance( ).format( date );
+            if ( date != null )
+            {
+                strResult = DateFormat.getDateInstance( ).format( date );
+            }
+            break;
         case TYPE_BYTE:
             byte[] bytesValue = daoUtil.getBytes( nIndex );
-            return String.valueOf( Hex.encodeHex( bytesValue ) );
+            if ( bytesValue != null )
+            {
+                strResult = String.valueOf( Hex.encodeHex( bytesValue ) );
+            }
+            break;
         case TYPE_DOUBLE:
             double dValue = daoUtil.getDouble( nIndex );
-            return Double.toString( dValue );
+            strResult = Double.toString( dValue );
+            break;
         default:
             AppLogService.error( "Error : unknown column type !" );
-            return StringUtils.EMPTY;
         }
+        return strResult;
     }
 
 }

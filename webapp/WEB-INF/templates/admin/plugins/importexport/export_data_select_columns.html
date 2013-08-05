@@ -1,7 +1,7 @@
 <div class="row-fluid">
-	<form class="form-horizontal" action="jsp/admin/plugins/importexport/DoExportData.jsp">
+	<form class="form-horizontal" action="jsp/admin/plugins/importexport/DoExportData.jsp" method="post">
 		<fieldset>
-			<legend>#i18n{importexport.adminFeature.exportdata.name}</legend>
+			<legend>#i18n{importexport.export_data.columns_selection.pageTitle}</legend>
 			<ul class="nav nav-tabs">
 				<li>
 					<a href="jsp/admin/plugins/importexport/ManageImportData.jsp">#i18n{importexport.import_data.pageTitle}</a>
@@ -10,14 +10,21 @@
 					<a href="jsp/admin/plugins/importexport/GetExportData.jsp">#i18n{importexport.export_data.pageTitle}</a>
 				</li>
 			</ul>
-			<#list columns as column>
-				<div class="control-group">
-					<div class="controls">
-						<input type="checkbox" name="columns" id="${column}" value="${column}" />
-						<label class="checkbox" for="${column}">${column}</label>
-					</div>
+			<div class="control-group">
+				<div class="controls">
+					<span class="help-block">#i18n{importexport.export_data.columns_selection.help}</span>
 				</div>
-			</#list>
+			</div>
+			<div class="control-group">
+				<#list columns as column>
+					<div class="controls">
+						<label class="checkbox" for="${column}">
+							<input type="checkbox" name="columns" id="${column}" value="${column}" checked="checked" />
+							${column}
+						</label>
+					</div>
+				</#list>
+			</div>
 			<div class="form-actions">
 				<input type="hidden" name="pluginName" value="${pluginName!}" />
 				<input type="hidden" name="databaseTable" value="${databaseTable}" />
