@@ -30,6 +30,14 @@ public class ExportDAO extends AbstractImportExportDAO
 
     private static final String CONSTANT_COMMA = ",";
 
+    /**
+     * Get the list of rows of a table of the database.
+     * @param strTableName The name of the table to get data from
+     * @param listColumns The list of columns to get
+     * @param plugin The plugin to use the pool of
+     * @return The list of rows containing the requested columns of the given
+     *         table
+     */
     public List<RowExportData> getDataFromTable( String strTableName, List<String> listColumns, Plugin plugin )
     {
         List<TableColumn> listTableColumns = getTableColumns( listColumns, strTableName, plugin, Locale.getDefault( ) );
@@ -65,6 +73,12 @@ public class ExportDAO extends AbstractImportExportDAO
         return listRowExportData;
     }
 
+    /**
+     * Get the SQL string to select data from the given table
+     * @param strTableName The name of the table
+     * @param listColumns The list of columns to get
+     * @return the SQL SELECT string
+     */
     private String getSqlSelect( String strTableName, List<String> listColumns )
     {
         StringBuilder sbSqlSelect = new StringBuilder( SQL_QUERY_SELECT );

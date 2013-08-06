@@ -125,6 +125,8 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
     {
         // We remove any previous import result generated synchronously or asynchronously
         request.getSession( ).removeAttribute( MARK_SESSION_IMPORT_RESULT );
+        // We remove the data table manager from the session
+        request.getSession( ).removeAttribute( ExportDataJspBean.PROPERTY_SESSION_AUTOMATIC_EXPORT_TABLE_MANAGER );
         ImportManager.getAsynchronousImportResult( AdminUserService.getAdminUser( request ).getUserId( ) );
 
         String strDatabaseTables = AppPropertiesService.getProperty( PROPERTY_DATABASE_TABLES );

@@ -55,5 +55,17 @@
                 fr.paris.lutece.plugins.importexport.service.export.daemon.ExportCleanerDaemon
 			</daemon-class>
 		</daemon>
+		<daemon>
+			<daemon-id>exportDaemon</daemon-id>
+            <daemon-name>
+                importexport.daemon.exportDaemon.name
+			</daemon-name>
+            <daemon-description>
+                importexport.daemon.exportDaemon.description
+			</daemon-description>
+            <daemon-class>
+                fr.paris.lutece.plugins.importexport.service.export.daemon.ExportDaemon
+			</daemon-class>
+		</daemon>
 	</daemons>
 </plug-in>

@@ -18,7 +18,7 @@ public class ExportCleanerDaemon extends Daemon
 {
     private static final String PLUGIN_IMPORTEXPORT_FOLDER = "plugins/importexport/";
 
-    private static final String PROPERTY_EXPORT_FILES_LIFE_TIME = "importexport.export_data.exportFileLifeTime";
+    private static final String PROPERTY_EXPORT_FILES_LIFE_TIME = "importexport.exportdata.exportFileLifeTime";
 
     private static final long DEFAULT_EXPORT_FILES_LIFE_TIME = 7200000l;
 

@@ -1,0 +1,54 @@
+<div class="row-fluid">
+	<ul class="nav nav-tabs">
+		<li>
+			<a href="jsp/admin/plugins/importexport/ManageImportData.jsp">#i18n{importexport.import_data.pageTitle}</a>
+		</li>
+		<li class="active">
+			<a href="jsp/admin/plugins/importexport/GetExportData.jsp">#i18n{importexport.export_data.pageTitle}</a>
+		</li>
+	</ul>
+	<div>
+		<div class="pull-right">
+			<a class="btn btn-small btn-primary" title="#i18n{importexport.export_data.automaticExportConfig.addExportConfig}" href="jsp/admin/plugins/importexport/GetCreateModifyExportConfig.jsp" >
+				<i class="icon-white icon-plus">&nbsp;</i>&nbsp;#i18n{importexport.export_data.automaticExportConfig.addExportConfig}
+			</a>
+		</div>
+		<legend>#i18n{importexport.export_data.automaticExportConfig.pageTitle}</legend>
+	</div>
+	<div class="span4 well">
+		<form class="form form-inline" action="jsp/admin/plugins/importexport/DoModifyAutomaticExport.jsp">
+			<fieldset>
+				<div class="control-group">
+					<label class="control-label" for="daemon_next_schedule">#i18n{importexport.export_data.automaticExportConfig.dateNextSchedule}</label>
+					<input type="text" id="daemon_next_schedule" name="daemon_next_schedule" value="${daemon_next_schedule!}">
+					<br />
+					<span class="helpblock">#i18n{importexport.export_data.automaticExportConfig.dateNextScheduleHelp}</span>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="daemon_interval">#i18n{importexport.export_data.automaticExportConfig.interval}</label>
+					<input type="text" id="daemon_interval" name="daemon_interval" value="${daemon_interval!}">
+				</div>
+				<div class="form-actions">
+					<button class="btn btn-primary btn-small">
+						<i class="icon-white icon-ok">&nbsp;</i>&nbsp;#i18n{portal.util.labelValidate}
+					</button>
+					<button class="btn btn-small" name="cancel" value="cancel" id="cancel">
+						<i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelCancel}
+					</button>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	<div class="span7">
+		<@dataTable dataTableManager=tableManager actionMacro="automaticExportActions" />
+	</div>
+</div>
+
+<#macro automaticExportActions item>
+	<a class="btn btn-small btn-primary" href="jsp/admin/plugins/importexport/GetCreateModifyExportConfig.jsp?idConfig=${item.id}" title="#i18n{portal.util.labelModify}">
+		<i class="icon-white icon-edit">&nbsp;</i>
+	</a>
+	<a class="btn btn-small btn-danger" href="jsp/admin/plugins/importexport/ConfirmDeleteExportConfig.jsp?idConfig=${item.id}" title="#i18n{portal.util.labelDelete}">
+		<i class="icon-white icon-trash">&nbsp;</i>
+	</a>
+</#macro>

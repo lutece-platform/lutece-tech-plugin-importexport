@@ -1,0 +1,98 @@
+<div class="row-fluid">
+	<form class="form-horizontal" action="jsp/admin/plugins/importexport/GetCreateModifyExportConfig.jsp" method="post">
+		<fieldset>
+			<ul class="nav nav-tabs">
+				<li>
+					<a href="jsp/admin/plugins/importexport/ManageImportData.jsp">#i18n{importexport.import_data.pageTitle}</a>
+				</li>
+				<li class="active">
+					<a href="jsp/admin/plugins/importexport/GetExportData.jsp">#i18n{importexport.export_data.pageTitle}</a>
+				</li>
+			</ul>
+			<div>
+				<#if idConfig??>
+					<legend>#i18n{importexport.export_data.modifyExportConfig.pageTitle}</legend>
+				<#else>
+					<legend>#i18n{importexport.export_data.addExportConfig.pageTitle}</legend>
+				</#if>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="databaseTable">#i18n{importexport.export_data.labelDatabaseTable}</label>
+				<div class="controls">
+					<#if (conf.tableName)??>
+						<@combo items=databaseTables name="databaseTable" default_value=conf.tableName />
+					<#else>
+						<@combo items=databaseTables name="databaseTable" default_value="" />
+					</#if>
+					<button class="btn btn-small btn-primary" >
+						<i class="icon-white icon-refresh">&nbsp;</i>&nbsp;#i18n{importexport.export_data.automaticExportConfig.labelUpdateColumnList}
+					</button>
+					<span class="help-block">#i18n{importexport.export_data.labelDatabaseTableHelp}</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="output_file_name">#i18n{importexport.export_data.automaticExportConfig.labelOutputFileName} *:</label>
+				<div class="controls">
+					<input type="text" id="output_file_name" name="output_file_name" value="${(conf.outputFileName)!}">
+					<span class="help-block">#i18n{importexport.export_data.automaticExportConfig.labelOutputFileNameHelp}</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="plugin">#i18n{importexport.export_data.labelPlugin}</label>
+				<div class="controls">
+					<#if (conf.plugin)??>
+						<@combo items=listPlugin name="plugin" default_value=conf.plugin.name />
+					<#else>
+						<@combo items=listPlugin name="plugin" default_value="" />
+					</#if>
+					<span class="help-block">#i18n{importexport.export_data.labelPluginHelp}</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="xslExport">#i18n{importexport.export_data.labelXslExport}</label>
+				<div class="controls">
+					<#if (conf.xslStylesheetId)??>
+						<@combo items=listXslExport name="xslExport" default_value=conf.xslStylesheetId />
+					<#else>
+						<@combo items=listXslExport name="xslExport" default_value="" />
+					</#if>
+					<span class="help-block">#i18n{importexport.export_data.labelXslExportHelp}</span>
+				</div>
+			</div>
+			<#if columns??>
+				<div class="control-group">
+					<#list columns as column>
+						<div class="controls">
+							<label class="checkbox" for="${column}">
+								<#if conf?? && !conf.listColumns??>
+									<input type="checkbox" name="columns" id="${column}" value="${column}" checked="checked" />
+								<#else>
+									<input type="checkbox" name="columns" id="${column}" value="${column}"
+										<#if conf?? && conf.listColumns?? && conf.listColumns?seq_contains(column)>checked="checked"</#if>
+										/>
+								</#if>
+								${column}
+							</label>
+						</div>
+					</#list>
+				</div>
+			</#if>
+			<div class="form-actions">
+				<#if idConfig??>
+					<input type="hidden" name="idConfig" id="idConfig" value="${idConfig}">
+				</#if>
+				<input type="hidden" name="pageReload" id=pageReload value="true">
+				<button class="btn btn-primary btn-small" name="saveExportConfig" id="saveExportConfig" value="saveExportConfig">
+					<#if idConfig??>
+						<i class="icon-white icon-ok">&nbsp;</i>&nbsp;#i18n{portal.util.labelValidate}
+					<#else>
+						<i class="icon-white icon-plus">&nbsp;</i>&nbsp;#i18n{portal.util.labelCreate}
+					</#if>
+				</button>
+				<button class="btn btn-small" name="cancel" value="cancel" id="cancel">
+					<i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelCancel}
+				</button>
+			</div>
+		</fieldset>
+	</form>
+</div>

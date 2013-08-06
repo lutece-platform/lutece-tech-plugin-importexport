@@ -6,10 +6,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.List;
 
 
@@ -61,35 +57,11 @@ public class RunnableExportService implements Runnable
     @Override
     public void run( )
     {
-        FileWriter fileWriter = null;
-        BufferedWriter bufferedWriter = null;
+        _nStatus = STATUS_WORKING;
         try
         {
-            // We flag the runnable as working
-            _nStatus = STATUS_WORKING;
-            String strExport = ExportManager.doProcessExport( _strTableName, _listColumns, _nXSLStylesheetId, _plugin );
-            File file = new File( getExportedFileName( ) );
-            if ( file.exists( ) )
-            {
-                file.delete( );
-            }
-            else
-            {
-                File containingFolder = file.getParentFile( );
-                if ( !containingFolder.exists( ) )
-                {
-                    containingFolder.mkdirs( );
-                }
-            }
-            file.createNewFile( );
-            fileWriter = new FileWriter( file );
-            bufferedWriter = new BufferedWriter( fileWriter );
-            bufferedWriter.write( strExport );
-            bufferedWriter.flush( );
-            // This close both the file writer and the buffered writer
-            bufferedWriter.close( );
-            bufferedWriter = null;
-            fileWriter = null;
+            ExportManager.doProcessExportIntoFile( getExportedFileName( ), _strTableName, _listColumns,
+                    _nXSLStylesheetId, _plugin );
         }
         catch ( Exception e )
         {
@@ -97,30 +69,6 @@ public class RunnableExportService implements Runnable
         }
         finally
         {
-            // We finnaly close writers that has not already been closed
-            if ( bufferedWriter != null )
-            {
-                try
-                {
-                    bufferedWriter.close( );
-                }
-                catch ( IOException e )
-                {
-                    AppLogService.error( e.getMessage( ), e );
-                }
-            }
-            if ( fileWriter != null )
-            {
-                try
-                {
-                    fileWriter.close( );
-                }
-                catch ( IOException e )
-                {
-                    AppLogService.error( e.getMessage( ), e );
-                }
-            }
-            // We flag the runnable as finished
             _nStatus = STATUS_FINISHED;
         }
     }

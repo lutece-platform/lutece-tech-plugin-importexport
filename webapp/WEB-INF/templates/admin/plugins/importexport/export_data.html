@@ -1,7 +1,6 @@
 <div class="row-fluid">
 	<form class="form-horizontal" action="jsp/admin/plugins/importexport/GetExportColumns.jsp">
 		<fieldset>
-			<legend>#i18n{importexport.export_data.pageTitle}</legend>
 			<ul class="nav nav-tabs">
 				<li>
 					<a href="jsp/admin/plugins/importexport/ManageImportData.jsp">#i18n{importexport.import_data.pageTitle}</a>
@@ -10,6 +9,14 @@
 					<a href="jsp/admin/plugins/importexport/GetExportData.jsp">#i18n{importexport.export_data.pageTitle}</a>
 				</li>
 			</ul>
+			<div>
+				<div class="pull-right">
+					<a href="jsp/admin/plugins/importexport/GetAutomaticExportConfiguration.jsp" class="btn btn-small btn-primary">
+						#i18n{importexport.export_data.automaticExportConfig.pageTitle}
+					</a>
+				</div>
+				<legend>#i18n{importexport.export_data.pageTitle}</legend>
+			</div>
 			<div class="control-group">
 				<label class="control-label" for="databaseTable">#i18n{importexport.export_data.labelDatabaseTable}</label>
 				<div class="controls">

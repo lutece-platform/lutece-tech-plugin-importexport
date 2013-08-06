@@ -6,10 +6,15 @@ import fr.paris.lutece.plugins.importexport.business.export.RowExportData;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.daemon.ThreadLauncherDaemon;
 import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.xsl.XslExportService;
 import fr.paris.lutece.util.xml.XmlUtil;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,11 +25,13 @@ import java.util.Map;
  */
 public class ExportManager
 {
+    public static final String BEAN_NAME_AUTOMATIC_EXPORT_CONFIG_DAO = "importexport.automaticExportConfigDAO";
+
     private static final String XML_TAG_EXPORT = "export";
     private static final String XML_TAG_ROW = "row";
     private static final String XML_PARAMETER_COLUMNS = "columns";
 
-    private static final String PROPERTY_EXPORT_COLUMN_NAME_SEPARATOR = "importexport.export_data.xml.columnNameSeparator";
+    private static final String PROPERTY_EXPORT_COLUMN_NAME_SEPARATOR = "importexport.exportdata.xml.columnNameSeparator";
 
     private static final String CONSTANT_SEMICOLON = ";";
 
@@ -145,5 +152,93 @@ public class ExportManager
             }
         }
         return null;
+    }
+
+    /**
+     * Do process an export into a file of the file system. If the file can not
+     * be written into, then the export is not processed.
+     * @param strOutputFilePath The path of the file to save the export into
+     * @param strTableName The name of the database table to export
+     * @param listColumns The list of columns to export
+     * @param nXSLStylesheetId The id of the XSL export style sheet to use to
+     *            format data retrieved from the database
+     * @param plugin The plugin to get the pool of
+     * @return True if the export succeeded and the file was written, false
+     *         otherwise
+     * @see #doProcessExport(String, List, int, Plugin)
+     */
+    public static boolean doProcessExportIntoFile( String strOutputFilePath, String strTableName,
+            List<String> listColumns, int nXSLStylesheetId, Plugin plugin )
+    {
+        FileWriter fileWriter = null;
+        BufferedWriter bufferedWriter = null;
+        boolean bResult = false;
+        try
+        {
+            File file = new File( strOutputFilePath );
+            if ( file.exists( ) )
+            {
+                boolean bRemoved = file.delete( );
+                // If we could not remove the file, then we ignore it
+                if ( !bRemoved )
+                {
+                    return false;
+                }
+            }
+            // If the file does not exist, we check that its containing folder exists
+            else
+            {
+                File containingFolder = file.getParentFile( );
+                if ( !containingFolder.exists( ) )
+                {
+                    containingFolder.mkdirs( );
+                }
+            }
+
+            if ( file.createNewFile( ) && file.canWrite( ) )
+            {
+                String strExport = doProcessExport( strTableName, listColumns, nXSLStylesheetId, plugin );
+                fileWriter = new FileWriter( file );
+                bufferedWriter = new BufferedWriter( fileWriter );
+                bufferedWriter.write( strExport );
+                bufferedWriter.flush( );
+                // This close both the file writer and the buffered writer
+                bufferedWriter.close( );
+                bufferedWriter = null;
+                fileWriter = null;
+                bResult = true;
+            }
+        }
+        catch ( Exception e )
+        {
+            AppLogService.error( e.getMessage( ), e );
+        }
+        finally
+        {
+            // We close both writers if they are still open
+            if ( bufferedWriter != null )
+            {
+                try
+                {
+                    bufferedWriter.close( );
+                }
+                catch ( IOException e )
+                {
+                    AppLogService.error( e.getMessage( ), e );
+                }
+            }
+            if ( fileWriter != null )
+            {
+                try
+                {
+                    fileWriter.close( );
+                }
+                catch ( IOException e )
+                {
+                    AppLogService.error( e.getMessage( ), e );
+                }
+            }
+        }
+        return bResult;
     }
 }
