@@ -45,6 +45,10 @@ public class ExportDaemon extends Daemon
             if ( lNextSchedule < new Date( ).getTime( ) )
             {
                 doExportData( );
+                // We update the next schedule
+                lNextSchedule = new Date( ).getTime( ) + Long.parseLong( getDaemonInterval( ) );
+                DatastoreService.setInstanceDataValue( PARAMETER_KEY_DAEMON_NEXT_SCHEDULE,
+                        Long.toString( lNextSchedule ) );
             }
         }
         else

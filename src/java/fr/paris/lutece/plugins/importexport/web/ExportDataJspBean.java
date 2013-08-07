@@ -91,6 +91,7 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
     private static final String TEMPLATE_CREATE_MODIFY_EXPORT_CONFIG = "admin/plugins/importexport/create_modify_export_config.html";
 
     private static final String MESSAGE_ERROR_NO_COLUMN_SELECTED = "importexport.export_data.error.noColumnSelected";
+    private static final String MESSAGE_ERROR_UPDATE_COLUMNS = "importexport.export_data.automaticExportConfig.error.updateColumns";
     private static final String MESSAGE_ERROR_MANDATORY_FIELDS = "portal.util.message.mandatoryFields";
     private static final String MESSAGE_ERROR_DATE_FORMAT = "importexport.export_data.automaticExportConfig.error.dateFormat";
     private static final String MESSAGE_CONFIRM_DELETE_EXPORT_CONFIG = "importexport.export_data.automaticExportConfig.confirmDeleteExportConfig";
@@ -510,6 +511,17 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
                 return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_MANDATORY_FIELDS,
                         AdminMessage.TYPE_ERROR );
             }
+            if ( config.getListColumns( ) == null || config.getListColumns( ).size( ) == 0 )
+            {
+                return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_NO_COLUMN_SELECTED,
+                        AdminMessage.TYPE_ERROR );
+            }
+            List<String> listColumns = ExportDAO.getTableColumnsNames( config.getTableName( ), config.getPlugin( ) );
+            if ( !listColumns.containsAll( config.getListColumns( ) ) )
+            {
+                return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_UPDATE_COLUMNS,
+                        AdminMessage.TYPE_ERROR );
+            }
 
             if ( config.getId( ) > 0 )
             {
@@ -578,7 +590,7 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
     public String doDeleteExportConfig( HttpServletRequest request )
     {
         String strId = request.getParameter( MARK_ID_CONFIG );
-        if ( StringUtils.isNotEmpty( strId ) && !StringUtils.isNumeric( strId ) )
+        if ( StringUtils.isNotEmpty( strId ) && StringUtils.isNumeric( strId ) )
         {
             int nId = Integer.parseInt( strId );
             _automaticExportConfigDAO.delete( nId );
