@@ -69,6 +69,7 @@ public abstract class AbstractImportExportDAO
                         strColumnName ), getJavaTypeFromSqlString( strColumnType ) );
                 listColumns.add( tableColumn );
             }
+            listColumnNames.get( 0 ).charAt( 0 );
         }
         daoUtil.free( );
 

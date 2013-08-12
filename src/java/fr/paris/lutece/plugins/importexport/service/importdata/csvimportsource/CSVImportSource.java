@@ -3,6 +3,7 @@ package fr.paris.lutece.plugins.importexport.service.importdata.csvimportsource;
 import fr.paris.lutece.plugins.importexport.business.ImportExportElement;
 import fr.paris.lutece.plugins.importexport.service.importdata.IImportSource;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.util.string.StringUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,6 +25,8 @@ import au.com.bytecode.opencsv.CSVReader;
  */
 public class CSVImportSource implements IImportSource
 {
+    private static final char CONSTANT_BOM_UTF8 = 65279;
+
     private CSVReader _csvReader;
     private Reader _reader;
     private List<String> _listColumnsName;
@@ -170,11 +173,30 @@ public class CSVImportSource implements IImportSource
         _listColumnsName = new ArrayList<String>( strFirstLine.length );
         if ( strFirstLine.length > 0 )
         {
+            boolean bIsFirst = true;
             for ( String strColumnTitle : strFirstLine )
             {
                 if ( strColumnTitle != null )
                 {
-                    _listColumnsName.add( strColumnTitle.toLowerCase( ) );
+                    String strTitle = strColumnTitle.toLowerCase( ).trim( );
+                    strTitle = StringUtil.replaceAccent( strTitle );
+                    if ( bIsFirst )
+                    {
+                        // We check that the BOM character has not been read
+                        if ( strTitle.startsWith( String.valueOf( CONSTANT_BOM_UTF8 ) ) )
+                        {
+                            strTitle = strTitle.substring( 1 );
+                        }
+                        // We eventually remove any first character that is not a latin character
+                        else if ( strTitle.charAt( 0 ) > 255 )
+                        {
+                            strTitle = strTitle.substring( 1 );
+                        }
+
+                        // The BOM character can only be the first character of the file
+                        bIsFirst = false;
+                    }
+                    _listColumnsName.add( strTitle );
                 }
             }
         }
