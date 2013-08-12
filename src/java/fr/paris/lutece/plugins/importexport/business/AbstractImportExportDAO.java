@@ -58,6 +58,10 @@ public abstract class AbstractImportExportDAO
         while ( daoUtil.next( ) )
         {
             String strColumnName = daoUtil.getString( 1 );
+            if ( strColumnName != null )
+            {
+                strColumnName = strColumnName.toLowerCase( );
+            }
             if ( listColumnNames.contains( strColumnName ) )
             {
                 String strColumnType = daoUtil.getString( 2 );

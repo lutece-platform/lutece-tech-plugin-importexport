@@ -172,7 +172,10 @@ public class CSVImportSource implements IImportSource
         {
             for ( String strColumnTitle : strFirstLine )
             {
-                _listColumnsName.add( strColumnTitle );
+                if ( strColumnTitle != null )
+                {
+                    _listColumnsName.add( strColumnTitle.toLowerCase( ) );
+                }
             }
         }
 
