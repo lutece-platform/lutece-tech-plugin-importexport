@@ -79,8 +79,6 @@ public class ExportManager
 
         mapAttributes.put( XML_PARAMETER_COLUMNS, sbColumns.toString( ) );
         XmlUtil.beginElement( sbXml, XML_TAG_EXPORT, mapAttributes );
-        mapAttributes = null;
-        sbColumns = null;
 
         List<RowExportData> listRowData = _exportDAO.getDataFromTable( strTableName, listColumns, plugin );
 

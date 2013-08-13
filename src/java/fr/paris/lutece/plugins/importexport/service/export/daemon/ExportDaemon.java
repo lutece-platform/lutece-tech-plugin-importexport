@@ -97,6 +97,10 @@ public class ExportDaemon extends Daemon
         setLastRunLogs( nExportSuccess + " out of " + listConfig.size( ) + " exports have been performed" );
     }
 
+    /**
+     * Get the IAutomaticExportConfigDAO
+     * @return The IAutomaticExportConfigDAO
+     */
     private IAutomaticExportConfigDAO getAutomaticExportConfigDAO( )
     {
         if ( _configDAO == null )

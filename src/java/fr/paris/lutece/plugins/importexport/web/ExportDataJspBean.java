@@ -392,6 +392,13 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
         return AppPathService.getBaseUrl( request ) + JSP_URL_EXPORT_DATA;
     }
 
+    /**
+     * Get the page to create or modify an export config
+     * @param request The request
+     * @param response The response
+     * @return The HTML content to display, or null if a redirection has already
+     *         been send
+     */
     public String getCreateModifyExportConfig( HttpServletRequest request, HttpServletResponse response )
     {
 
@@ -500,6 +507,11 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
         return getAdminPage( template.getHtml( ) );
     }
 
+    /**
+     * Do create or modify an export config
+     * @param request The request
+     * @return The next URL to redirect to
+     */
     public String doCreateModifyExportConfig( HttpServletRequest request )
     {
         if ( StringUtils.isEmpty( request.getParameter( PARAMETER_CANCEL ) ) )
@@ -535,6 +547,11 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
         return AppPathService.getBaseUrl( request ) + JSP_URL_AUTOMATIC_EXPORT_CONFIGURATION;
     }
 
+    /**
+     * Get an export config from an HTTP request
+     * @param request The request
+     * @return The export config containing data in the request
+     */
     private AutomaticExportConfig getConfigFromRequest( HttpServletRequest request )
     {
         String strIdConfig = request.getParameter( MARK_ID_CONFIG );

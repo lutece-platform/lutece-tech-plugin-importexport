@@ -9,6 +9,9 @@ import fr.paris.lutece.portal.service.util.AppPathService;
 import java.util.List;
 
 
+/**
+ * RunnableExportService
+ */
 public class RunnableExportService implements Runnable
 {
 
