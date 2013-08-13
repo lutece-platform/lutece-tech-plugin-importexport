@@ -26,7 +26,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Manager of imports
  */
-public class ImportManager
+public final class ImportManager
 {
     private static List<IImportSourceFactory> _listImportSourceFactories = new ArrayList<IImportSourceFactory>( );
 

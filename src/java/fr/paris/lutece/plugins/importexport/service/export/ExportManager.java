@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Export manager
  */
-public class ExportManager
+public final class ExportManager
 {
     public static final String BEAN_NAME_AUTOMATIC_EXPORT_CONFIG_DAO = "importexport.automaticExportConfigDAO";
 

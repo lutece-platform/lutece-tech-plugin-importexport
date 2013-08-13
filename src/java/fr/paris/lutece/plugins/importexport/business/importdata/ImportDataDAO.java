@@ -81,11 +81,11 @@ public class ImportDataDAO extends AbstractImportExportDAO
     {
         if ( StringUtils.isEmpty( strTableName ) )
         {
-            throw new AppException( I18nService.getLocalizedString( ERROR_EMPTY_TABLE_NAME, _locale ) );
+            throw new AppException( I18nService.getLocalizedString( ERROR_EMPTY_TABLE_NAME, locale ) );
         }
         if ( listTableColumns == null || listTableColumns.size( ) == 0 )
         {
-            throw new AppException( I18nService.getLocalizedString( ERROR_EMPTY_COLUMN_LIST, _locale ) );
+            throw new AppException( I18nService.getLocalizedString( ERROR_EMPTY_COLUMN_LIST, locale ) );
         }
 
         // We create the list of columns of the required table
