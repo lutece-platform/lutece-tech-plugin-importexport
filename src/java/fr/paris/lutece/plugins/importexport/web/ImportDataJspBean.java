@@ -225,12 +225,12 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
                 if ( fileItem.getSize( ) < lThresholdSize )
                 {
                     ImportResult result = ImportManager.doProcessImport( importSource, strTableName,
-                            bUpdateExistingRows, bStopOnErrors, plugin, locale );
+                            bUpdateExistingRows, bStopOnErrors, false, plugin, locale );
                     request.getSession( ).setAttribute( MARK_SESSION_IMPORT_RESULT, result );
                     return AppPathService.getBaseUrl( request ) + JSP_URL_IMPORT_RESULT;
                 }
                 ImportManager.doProcessAsynchronousImport( importSource, strTableName, plugin, locale,
-                        bUpdateExistingRows, bStopOnErrors, admin );
+                        bUpdateExistingRows, bStopOnErrors, false, admin );
                 return AppPathService.getBaseUrl( request ) + JSP_URL_IMPORT_PROCESSING;
 
             }

@@ -23,6 +23,7 @@ public class ImportDaemon extends Daemon
     private static final String PROPERTY_DAEMON_SOURCE_FOLDER_PATH = "importexport.daemon.importDaemon.sourceFolderPath";
     private static final String PROPERTY_DAEMON_UPDATE_EXISTING_ROWS = "importexport.daemon.importDaemon.updateExistingRows";
     private static final String PROPERTY_DAEMON_STOP_ON_ERRORS = "importexport.daemon.importDaemon.stopOnErrors";
+    private static final String PROPERTY_DAEMON_EMPTY_TABLE_BEFORE_IMPORT = "importexport.daemon.importDaemon.emptyTableBeforeImporting";
 
     private static final String CONSTANT_SLASH = "/";
     private static final String CONSTANT_SEMICOLON = ";";
@@ -50,6 +51,8 @@ public class ImportDaemon extends Daemon
                         .getProperty( PROPERTY_DAEMON_UPDATE_EXISTING_ROWS ) );
                 boolean bStopOnErrors = Boolean.parseBoolean( AppPropertiesService
                         .getProperty( PROPERTY_DAEMON_STOP_ON_ERRORS ) );
+                boolean bEmptyTable = Boolean.parseBoolean( AppPropertiesService
+                        .getProperty( PROPERTY_DAEMON_EMPTY_TABLE_BEFORE_IMPORT ) );
                 for ( String strFileName : strFiles )
                 {
                     File file = new File( strSourcePath + strFileName );
@@ -80,7 +83,7 @@ public class ImportDaemon extends Daemon
                             if ( importSource != null )
                             {
                                 ImportResult result = ImportManager.doProcessImport( importSource, strTableName,
-                                        bUpdateExistingRows, bStopOnErrors, null, Locale.getDefault( ) );
+                                        bUpdateExistingRows, bStopOnErrors, bEmptyTable, null, Locale.getDefault( ) );
                                 importSource.close( );
                                 // If we extracted some data from the file, we remove it
                                 String strLog = result.getCreatedElements( ) + " element(s) created, "

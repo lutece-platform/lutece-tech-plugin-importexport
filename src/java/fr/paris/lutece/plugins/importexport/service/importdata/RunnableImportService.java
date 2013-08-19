@@ -23,6 +23,7 @@ public class RunnableImportService implements Runnable
     private Locale _locale;
     private boolean _bUpdateExistingRows;
     private boolean _bStopOnErrors;
+    private boolean _bEmptyTable;
     private int _nStatus = STATUS_QUEUED;
     private volatile ImportResult _importResult;
 
@@ -37,15 +38,18 @@ public class RunnableImportService implements Runnable
      *            updated (true) or ignored (false)
      * @param bStopOnErrors True to stop when an error occurred, false to skip
      *            the item and continue
+     * @param bEmptyTable True to empty the table before importing data, false
+     *            otherwise
      */
     public RunnableImportService( IImportSource importSource, String strTableName, Plugin plugin, Locale locale,
-            boolean bUpdateExistingRows, boolean bStopOnErrors )
+            boolean bUpdateExistingRows, boolean bStopOnErrors, boolean bEmptyTable )
     {
         this._importSource = importSource;
         this._strTableName = strTableName;
         this._plugin = plugin;
         this._bUpdateExistingRows = bUpdateExistingRows;
         this._bStopOnErrors = bStopOnErrors;
+        this._bEmptyTable = bEmptyTable;
         this._locale = locale;
     }
 
@@ -59,7 +63,7 @@ public class RunnableImportService implements Runnable
         {
             _nStatus = STATUS_WORKING;
             _importResult = ImportManager.doProcessImport( _importSource, _strTableName, _bUpdateExistingRows,
-                    _bStopOnErrors, _plugin, _locale );
+                    _bStopOnErrors, _bEmptyTable, _plugin, _locale );
         }
         catch ( Exception e )
         {

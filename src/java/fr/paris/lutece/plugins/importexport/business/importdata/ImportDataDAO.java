@@ -41,6 +41,7 @@ public class ImportDataDAO extends AbstractImportExportDAO
     private static final String SQL_QUERY_EQUALS = " = ? ";
     private static final String SQL_QUERY_WHERE = " WHERE ";
     private static final String SQL_QUERY_AND = " AND ";
+    private static final String SQL_QUERY_DELETE_FROM = " DELETE FROM ";
 
     private static final String CONSTANT_QUESTION_MARK = "?";
     private static final String CONSTANT_COMA = ",";
@@ -255,6 +256,16 @@ public class ImportDataDAO extends AbstractImportExportDAO
         }
 
         return bResult;
+    }
+
+    /**
+     * Remove every data from the table. This operation can NOT be rolled back !
+     */
+    public void emptyTable( )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_FROM + _strTableName );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**

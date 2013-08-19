@@ -126,12 +126,14 @@ public final class ImportManager
      *            them
      * @param bStopOnErrors True to stop when an error occurred, false to skip
      *            the item and continue
+     * @param bEmptyTable True to empty the table before importing data, false
+     *            otherwise
      * @param plugin The plugin to get the pool from
      * @param locale The locale
      * @return The result of the import
      */
     public static ImportResult doProcessImport( IImportSource importSource, String strTableName,
-            boolean bUpdateExistingRows, boolean bStopOnErrors, Plugin plugin, Locale locale )
+            boolean bUpdateExistingRows, boolean bStopOnErrors, boolean bEmptyTable, Plugin plugin, Locale locale )
     {
         List<ImportExportElement> listElements;
         int nCreatedElements = 0;
@@ -152,6 +154,17 @@ public final class ImportManager
         List<ImportMessage> listErrors = new ArrayList<ImportMessage>( );
         try
         {
+            if ( bEmptyTable )
+            {
+                try
+                {
+                    importElementDAO.emptyTable( );
+                }
+                catch ( AppException e )
+                {
+                    AppLogService.error( e.getMessage( ), e );
+                }
+            }
             // While there is values in the import source
             while ( ( listElements = importSource.getNextValues( ) ) != null )
             {
@@ -235,14 +248,16 @@ public final class ImportManager
      *            them
      * @param bStopOnErrors True to stop when an error occurred, false to skip
      *            the item and continue
+     * @param bEmptyTable True to empty the table before importing data, false
+     *            otherwise
      * @param admin The admin user that started the import, or null if the
      *            import was started by a daemon
      */
     public static void doProcessAsynchronousImport( IImportSource importSource, String strTableName, Plugin plugin,
-            Locale locale, boolean bUpdateExistingRows, boolean bStopOnErrors, AdminUser admin )
+            Locale locale, boolean bUpdateExistingRows, boolean bStopOnErrors, boolean bEmptyTable, AdminUser admin )
     {
         RunnableImportService runnableImportService = new RunnableImportService( importSource, strTableName, plugin,
-                locale, bUpdateExistingRows, bStopOnErrors );
+                locale, bUpdateExistingRows, bStopOnErrors, bEmptyTable );
         if ( admin != null )
         {
             _mapWorkingRunnableImportServices.put( admin.getUserId( ), runnableImportService );
