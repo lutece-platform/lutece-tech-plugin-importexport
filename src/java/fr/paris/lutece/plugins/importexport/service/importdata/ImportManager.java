@@ -175,8 +175,8 @@ public final class ImportManager
                 nItemNumber++;
                 try
                 {
-                    // If the row already exists
-                    if ( importElementDAO.checkElementExists( listElements ) )
+                    // If we didn't emptied the table, and the row already exists
+                    if ( !bEmptyTable && importElementDAO.checkElementExists( listElements ) )
                     {
                         // If we must update existing rows
                         if ( bUpdateExistingRows )
