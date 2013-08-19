@@ -97,6 +97,7 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
     private static final String PARAMETER_PLUGIN_NAME = "plugin";
     private static final String PARAMETER_UPDATE_EXISTING_ROWS = "update";
     private static final String PARAMETER_STOP_ON_ERRORS = "stopOnErrors";
+    private static final String PARAMETER_EMPTY_TABLE = "emptyTable";
 
     // Templates
     private static final String TEMPLATE_IMPORT_DATA = "admin/plugins/importexport/import_data.html";
@@ -194,7 +195,7 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
             Plugin plugin = PluginService.getPlugin( strPluginName );
             boolean bUpdateExistingRows = Boolean.parseBoolean( request.getParameter( PARAMETER_UPDATE_EXISTING_ROWS ) );
             boolean bStopOnErrors = Boolean.parseBoolean( request.getParameter( PARAMETER_STOP_ON_ERRORS ) );
-
+            boolean bEmptyTable = Boolean.parseBoolean( request.getParameter( PARAMETER_EMPTY_TABLE ) );
             if ( fileItem == null || StringUtils.isEmpty( strTableName ) )
             {
                 return AdminMessageService.getMessageUrl( request, MESSAGE_MANDATORY_FIELDS, AdminMessage.TYPE_ERROR );
@@ -225,12 +226,12 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
                 if ( fileItem.getSize( ) < lThresholdSize )
                 {
                     ImportResult result = ImportManager.doProcessImport( importSource, strTableName,
-                            bUpdateExistingRows, bStopOnErrors, false, plugin, locale );
+                            bUpdateExistingRows, bStopOnErrors, bEmptyTable, plugin, locale );
                     request.getSession( ).setAttribute( MARK_SESSION_IMPORT_RESULT, result );
                     return AppPathService.getBaseUrl( request ) + JSP_URL_IMPORT_RESULT;
                 }
                 ImportManager.doProcessAsynchronousImport( importSource, strTableName, plugin, locale,
-                        bUpdateExistingRows, bStopOnErrors, false, admin );
+                        bUpdateExistingRows, bStopOnErrors, bEmptyTable, admin );
                 return AppPathService.getBaseUrl( request ) + JSP_URL_IMPORT_PROCESSING;
 
             }

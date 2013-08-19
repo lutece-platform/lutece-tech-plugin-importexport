@@ -259,13 +259,13 @@ public class ImportDataDAO extends AbstractImportExportDAO
     }
 
     /**
-     * Remove every data from the table. This operation can NOT be rolled back !
+     * Remove every data from the table.
+     * @throws SQLException If an error occurs
      */
-    public void emptyTable( )
+    public void emptyTable( ) throws SQLException
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_FROM + _strTableName );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        _transaction.prepareStatement( SQL_QUERY_DELETE_FROM + _strTableName );
+        _transaction.executeStatement( );
     }
 
     /**

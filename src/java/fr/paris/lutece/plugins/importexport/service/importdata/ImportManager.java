@@ -164,6 +164,10 @@ public final class ImportManager
                 {
                     AppLogService.error( e.getMessage( ), e );
                 }
+                catch ( SQLException e )
+                {
+                    AppLogService.error( e.getMessage( ), e );
+                }
             }
             // While there is values in the import source
             while ( ( listElements = importSource.getNextValues( ) ) != null )
@@ -202,8 +206,6 @@ public final class ImportManager
                     if ( bStopOnErrors )
                     {
                         importElementDAO.rollbackTransaction( );
-                        nCreatedElements = 0;
-                        nUpdatedElements = 0;
                         return new ImportResult( nCreatedElements, nUpdatedElements, nIgnoredElements, listErrors );
                     }
                 }
@@ -216,8 +218,6 @@ public final class ImportManager
                     if ( bStopOnErrors )
                     {
                         importElementDAO.rollbackTransaction( );
-                        nCreatedElements = 0;
-                        nUpdatedElements = 0;
                         return new ImportResult( nCreatedElements, nUpdatedElements, nIgnoredElements, listErrors );
                     }
                 }
@@ -228,8 +228,6 @@ public final class ImportManager
         {
             AppLogService.error( e.getMessage( ), e );
             importElementDAO.rollbackTransaction( );
-            nCreatedElements = 0;
-            nUpdatedElements = 0;
             ImportMessage importMessage = new ImportMessage( e.getMessage( ), ImportMessage.STATUS_ERROR, nItemNumber );
             listErrors.add( importMessage );
         }

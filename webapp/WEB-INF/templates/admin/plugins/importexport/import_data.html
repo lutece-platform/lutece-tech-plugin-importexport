@@ -41,6 +41,13 @@
 				</div>
 			</div>
 			<div class="control-group">
+				<label class="control-label" for="emptyTable">#i18n{importexport.import_data.labelEmptyTable}</label>
+				<div class="controls">
+					<input type="checkbox" name="emptyTable" id="emptyTable" value="true" >
+					<span class="help-block">#i18n{importexport.import_data.labelEmptyTableHelp}</span>
+				</div>
+			</div>
+			<div class="control-group">
 				<label class="control-label" for="plugin">#i18n{importexport.import_data.labelPlugin}</label>
 				<div class="controls">
 					<@combo items=listPlugin name="plugin" default_value="" />
