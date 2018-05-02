@@ -14,7 +14,7 @@
    <copyright>Copyright 2001-2013 Mairie de Paris</copyright>
 	<core-version-dependency>
 		<min-core-version>4.1.0</min-core-version>
-		<max-core-version/>	
+        <max-core-version>6.0.1</max-core-version>
     </core-version-dependency>
 	<db-pool-required>1</db-pool-required>
 
