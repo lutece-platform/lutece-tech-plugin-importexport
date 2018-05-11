@@ -51,6 +51,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 
 import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.CSVParser;
 
 
 /**
@@ -90,9 +91,9 @@ public class CSVImportSource implements IImportSource
             if ( _reader != null )
             {
                 Character cSeparator = StringUtils.isNotEmpty( strCSVSeparator ) ? strCSVSeparator.charAt( 0 )
-                        : CSVReader.DEFAULT_SEPARATOR;
+                        : CSVParser.DEFAULT_SEPARATOR;
                 Character cQuoteChar = StringUtils.isNotEmpty( strCSVQuoteChar ) ? strCSVQuoteChar.charAt( 0 )
-                        : CSVReader.DEFAULT_QUOTE_CHARACTER;
+                        : CSVParser.DEFAULT_QUOTE_CHARACTER;
                 _csvReader = new CSVReader( _reader, cSeparator, cQuoteChar );
             }
         }
@@ -116,9 +117,9 @@ public class CSVImportSource implements IImportSource
             {
                 _reader = new FileReader( file );
                 Character cSeparator = StringUtils.isNotEmpty( strCSVSeparator ) ? strCSVSeparator.charAt( 0 )
-                        : CSVReader.DEFAULT_SEPARATOR;
+                        : CSVParser.DEFAULT_SEPARATOR;
                 Character cQuoteChar = StringUtils.isNotEmpty( strCSVQuoteChar ) ? strCSVQuoteChar.charAt( 0 )
-                        : CSVReader.DEFAULT_QUOTE_CHARACTER;
+                        : CSVParser.DEFAULT_QUOTE_CHARACTER;
                 _csvReader = new CSVReader( _reader, cSeparator, cQuoteChar );
             }
             catch ( FileNotFoundException e )
