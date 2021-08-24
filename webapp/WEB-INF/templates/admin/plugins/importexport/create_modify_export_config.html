@@ -62,10 +62,10 @@
 				</div>
 			</div>
 			<div class="span4">
-				<#if columns??>
+				<#if cols??>
 					<div class="control-group">
 						<label class="">#i18n{importexport.export_data.columns_selection.help}</label>
-						<#list columns as column>
+						<#list cols as column>
 							<label class="checkbox" for="${column}">
 								<#if conf?? && !conf.listColumns??>
 									<input type="checkbox" name="columns" id="${column}" value="${column}" checked="checked" />

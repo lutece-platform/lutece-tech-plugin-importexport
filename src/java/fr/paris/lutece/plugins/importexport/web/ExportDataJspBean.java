@@ -100,7 +100,7 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
 
     private static final String MARK_DATABASE_TABLES = "databaseTables";
     private static final String MARK_LIST_PLUGIN = "listPlugin";
-    private static final String MARK_COLUMNS = "columns";
+    private static final String MARK_COLUMNS = "cols";
     private static final String MARK_LIST_XSL_EXPORT = "listXslExport";
     private static final String MARK_TABLE_MANAGER = "tableManager";
     private static final String MARK_DAEMON_NEXT_SCHEDULE = "daemon_next_schedule";
