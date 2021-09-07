@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.importexport.business.importdata;
 
 import java.util.List;
 
-
 /**
  * Describes the result of an import
  */
@@ -56,13 +55,17 @@ public class ImportResult
 
     /**
      * Constructor with parameters initialized
-     * @param nCreatedElements The number of created elements
-     * @param nUpdatedElements The number of updated elements
-     * @param nIgnoredElements The number of ignored elements
-     * @param listMessages The list of messages
+     * 
+     * @param nCreatedElements
+     *            The number of created elements
+     * @param nUpdatedElements
+     *            The number of updated elements
+     * @param nIgnoredElements
+     *            The number of ignored elements
+     * @param listMessages
+     *            The list of messages
      */
-    public ImportResult( int nCreatedElements, int nUpdatedElements, int nIgnoredElements,
-            List<ImportMessage> listMessages )
+    public ImportResult( int nCreatedElements, int nUpdatedElements, int nIgnoredElements, List<ImportMessage> listMessages )
     {
         setCreatedElements( nCreatedElements );
         setUpdatedElements( nUpdatedElements );
@@ -72,6 +75,7 @@ public class ImportResult
 
     /**
      * Get the number of created elements
+     * 
      * @return The number of created elements
      */
     public int getCreatedElements( )
@@ -81,7 +85,9 @@ public class ImportResult
 
     /**
      * Set the number of created elements
-     * @param nCreatedElements The number of created elements
+     * 
+     * @param nCreatedElements
+     *            The number of created elements
      */
     public void setCreatedElements( int nCreatedElements )
     {
@@ -90,6 +96,7 @@ public class ImportResult
 
     /**
      * Get the number of updated elements
+     * 
      * @return The number of updated elements
      */
     public int getUpdatedElements( )
@@ -99,7 +106,9 @@ public class ImportResult
 
     /**
      * Set the number of updated elements
-     * @param nUpdatedElements The number of updated elements
+     * 
+     * @param nUpdatedElements
+     *            The number of updated elements
      */
     public void setUpdatedElements( int nUpdatedElements )
     {
@@ -108,6 +117,7 @@ public class ImportResult
 
     /**
      * Get the number of ignored elements
+     * 
      * @return The number of ignored elements
      */
     public int getIgnoredElements( )
@@ -117,7 +127,9 @@ public class ImportResult
 
     /**
      * Set the number of ignored elements
-     * @param nIgnoredElements The number of ignored elements
+     * 
+     * @param nIgnoredElements
+     *            The number of ignored elements
      */
     public void setIgnoredElements( int nIgnoredElements )
     {
@@ -126,6 +138,7 @@ public class ImportResult
 
     /**
      * Get the list of import messages
+     * 
      * @return The list of import messages
      */
     public List<ImportMessage> getListImportMessage( )
@@ -135,7 +148,9 @@ public class ImportResult
 
     /**
      * Set the list of import messages
-     * @param listImportMessage The list of import messages
+     * 
+     * @param listImportMessage
+     *            The list of import messages
      */
     public void setListImportMessage( List<ImportMessage> listImportMessage )
     {

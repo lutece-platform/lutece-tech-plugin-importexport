@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-
 
 /**
  * Implementation of the IAutomaticExportConfigDAO interface
@@ -184,10 +183,11 @@ public class AutomaticExportConfigDAO implements IAutomaticExportConfigDAO
     }
 
     /**
-     * Get the list of columns associated with a given configuration. The list
-     * can be retrieved through the method
+     * Get the list of columns associated with a given configuration. The list can be retrieved through the method
      * {@link AutomaticExportConfig#getListColumns()} of the configuration
-     * @param config The configuration to set the list of columns
+     * 
+     * @param config
+     *            The configuration to set the list of columns
      */
     private void getListColumns( AutomaticExportConfig config )
     {
@@ -209,8 +209,11 @@ public class AutomaticExportConfigDAO implements IAutomaticExportConfigDAO
 
     /**
      * Insert a list of columns associated to a given configuration
-     * @param nIdConfig The id of the configuration
-     * @param listColumns The list of columns to insert
+     * 
+     * @param nIdConfig
+     *            The id of the configuration
+     * @param listColumns
+     *            The list of columns to insert
      */
     private void insertColumns( int nIdConfig, List<String> listColumns )
     {
@@ -230,7 +233,9 @@ public class AutomaticExportConfigDAO implements IAutomaticExportConfigDAO
 
     /**
      * Remove every columns associated with a given configuration
-     * @param nIdConfig The id of the configuration to remove columns of
+     * 
+     * @param nIdConfig
+     *            The id of the configuration to remove columns of
      */
     private void removeColumns( int nIdConfig )
     {
@@ -242,6 +247,7 @@ public class AutomaticExportConfigDAO implements IAutomaticExportConfigDAO
 
     /**
      * Get a new primary key from the database
+     * 
      * @return The new primary key
      */
     private int getNewPrimaryKey( )
@@ -259,6 +265,7 @@ public class AutomaticExportConfigDAO implements IAutomaticExportConfigDAO
 
     /**
      * Get the import export plugin
+     * 
      * @return The import export plugin
      */
     private Plugin getPlugin( )

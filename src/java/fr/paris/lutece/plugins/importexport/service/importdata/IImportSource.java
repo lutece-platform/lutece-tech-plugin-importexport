@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,24 +37,22 @@ import fr.paris.lutece.plugins.importexport.business.ImportExportElement;
 
 import java.util.List;
 
-
 /**
  * Interface for data sources of imports
  */
 public interface IImportSource
 {
     /**
-     * Get the next set of values, or null if this data source has no more
-     * values.
-     * @return The list of values, or null if there is no more or if an error
-     *         occurs while reading values in the data source
+     * Get the next set of values, or null if this data source has no more values.
+     * 
+     * @return The list of values, or null if there is no more or if an error occurs while reading values in the data source
      */
     List<ImportExportElement> getNextValues( );
 
     /**
      * Get the name of columns of this data source
-     * @return The name of columns of this data source, or null if an error
-     *         occurs while reading values in the data source
+     * 
+     * @return The name of columns of this data source, or null if an error occurs while reading values in the data source
      */
     List<String> getColumnsName( );
 

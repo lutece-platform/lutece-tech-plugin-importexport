@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,8 +42,8 @@ public class ImportExportElement
     private String _strValue;
 
     /**
-     * Get the name of the column of the database to insert the value of this
-     * element in
+     * Get the name of the column of the database to insert the value of this element in
+     * 
      * @return the name of the column of the database
      */
     public String getColumnName( )
@@ -52,9 +52,10 @@ public class ImportExportElement
     }
 
     /**
-     * Set the name of the column of the database to insert the value of this
-     * element in
-     * @param strColumnName the name of the column of the database
+     * Set the name of the column of the database to insert the value of this element in
+     * 
+     * @param strColumnName
+     *            the name of the column of the database
      */
     public void setColumnName( String strColumnName )
     {
@@ -63,6 +64,7 @@ public class ImportExportElement
 
     /**
      * Get the value of this element
+     * 
      * @return the value of this element
      */
     public String getValue( )
@@ -72,7 +74,9 @@ public class ImportExportElement
 
     /**
      * Set the value of this element
-     * @param strValue the value of this element
+     * 
+     * @param strValue
+     *            the value of this element
      */
     public void setValue( String strValue )
     {

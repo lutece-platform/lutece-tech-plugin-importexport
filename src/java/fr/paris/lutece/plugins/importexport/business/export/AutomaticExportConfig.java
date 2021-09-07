@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,10 +37,8 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 
 import java.util.List;
 
-
 /**
- * Class that represents a configuration of an export that is processed by the
- * export daemon
+ * Class that represents a configuration of an export that is processed by the export daemon
  */
 public class AutomaticExportConfig
 {
@@ -53,6 +51,7 @@ public class AutomaticExportConfig
 
     /**
      * Get the id of the export configuration
+     * 
      * @return the id of the export configuration
      */
     public int getId( )
@@ -62,7 +61,9 @@ public class AutomaticExportConfig
 
     /**
      * set the id of the export configuration
-     * @param nId the id of the export configuration
+     * 
+     * @param nId
+     *            the id of the export configuration
      */
     public void setId( int nId )
     {
@@ -71,6 +72,7 @@ public class AutomaticExportConfig
 
     /**
      * Get the name of the table of the database to export data from
+     * 
      * @return the name of the table of the database
      */
     public String getTableName( )
@@ -80,7 +82,9 @@ public class AutomaticExportConfig
 
     /**
      * Set the name of the table of the database to export data from
-     * @param strTableName the name of the table of the database
+     * 
+     * @param strTableName
+     *            the name of the table of the database
      */
     public void setTableName( String strTableName )
     {
@@ -89,6 +93,7 @@ public class AutomaticExportConfig
 
     /**
      * Get the name of the file that will contain the result of the export
+     * 
      * @return The name of the file that will contain the result of the export
      */
     public String getOutputFileName( )
@@ -98,8 +103,9 @@ public class AutomaticExportConfig
 
     /**
      * Set the name of the file that will contain the result of the export
-     * @param strOutputFileName The name of the file that will contain the
-     *            result of the export
+     * 
+     * @param strOutputFileName
+     *            The name of the file that will contain the result of the export
      */
     public void setOutputFileName( String strOutputFileName )
     {
@@ -108,6 +114,7 @@ public class AutomaticExportConfig
 
     /**
      * Get the list of columns to include in the export
+     * 
      * @return The list of columns to include in the export
      */
     public List<String> getListColumns( )
@@ -117,7 +124,9 @@ public class AutomaticExportConfig
 
     /**
      * Set the list of columns to include in the export
-     * @param listColumns The list of columns to include in the export
+     * 
+     * @param listColumns
+     *            The list of columns to include in the export
      */
     public void setListColumns( List<String> listColumns )
     {
@@ -125,8 +134,8 @@ public class AutomaticExportConfig
     }
 
     /**
-     * Get the id of the style sheet to apply to the data retrieved from the
-     * database
+     * Get the id of the style sheet to apply to the data retrieved from the database
+     * 
      * @return the id of the style sheet
      */
     public int getXslStylesheetId( )
@@ -135,9 +144,10 @@ public class AutomaticExportConfig
     }
 
     /**
-     * Set the id of the style sheet to apply to the data retrieved from the
-     * database
-     * @param nXslStylesheetId the id of the style sheet
+     * Set the id of the style sheet to apply to the data retrieved from the database
+     * 
+     * @param nXslStylesheetId
+     *            the id of the style sheet
      */
     public void setXslStylesheetId( int nXslStylesheetId )
     {
@@ -146,6 +156,7 @@ public class AutomaticExportConfig
 
     /**
      * Get the plugin to get the pool from
+     * 
      * @return the plugin to get the pool from
      */
     public Plugin getPlugin( )
@@ -155,7 +166,9 @@ public class AutomaticExportConfig
 
     /**
      * Set the plugin to get the pool from
-     * @param plugin the plugin to get the pool from
+     * 
+     * @param plugin
+     *            the plugin to get the pool from
      */
     public void setPlugin( Plugin plugin )
     {

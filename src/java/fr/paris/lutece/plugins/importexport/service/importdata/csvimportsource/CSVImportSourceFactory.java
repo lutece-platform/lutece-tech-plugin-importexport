@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,6 @@ import java.io.File;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
-
 
 /**
  * Factory for CSV import sources

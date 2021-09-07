@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,6 @@ import java.util.Date;
 
 import org.apache.commons.io.filefilter.FileFilterUtils;
 
-
 /**
  * Daemon to remove old exports of data from the file system
  */
@@ -64,8 +63,7 @@ public class ExportCleanerDaemon extends Daemon
     public void run( )
     {
         File mainExportFolder = new File( AppPathService.getWebAppPath( ) + CONSTANT_SLASH + PLUGIN_IMPORTEXPORT_FOLDER );
-        long lExportFileLifeTime = AppPropertiesService.getPropertyLong( PROPERTY_EXPORT_FILES_LIFE_TIME,
-                DEFAULT_EXPORT_FILES_LIFE_TIME );
+        long lExportFileLifeTime = AppPropertiesService.getPropertyLong( PROPERTY_EXPORT_FILES_LIFE_TIME, DEFAULT_EXPORT_FILES_LIFE_TIME );
         long lDateThreshold = new Date( ).getTime( ) - lExportFileLifeTime;
         int nFileRemoved = 0;
         int nFileIgnored = 0;
@@ -90,8 +88,7 @@ public class ExportCleanerDaemon extends Daemon
                 }
             }
         }
-        setLastRunLogs( nFileRemoved + " old export file(s) have been removed and " + nFileIgnored
-                + " have been ignored" );
+        setLastRunLogs( nFileRemoved + " old export file(s) have been removed and " + nFileIgnored + " have been ignored" );
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-
 /**
  * Daemon to automatically export data from the database into files
  */
@@ -69,8 +68,7 @@ public class ExportDaemon extends Daemon
     @Override
     public void run( )
     {
-        String strNextSchedule = DatastoreService.getInstanceDataValue( PARAMETER_KEY_DAEMON_NEXT_SCHEDULE,
-                StringUtils.EMPTY );
+        String strNextSchedule = DatastoreService.getInstanceDataValue( PARAMETER_KEY_DAEMON_NEXT_SCHEDULE, StringUtils.EMPTY );
         if ( StringUtils.isNotEmpty( strNextSchedule ) && StringUtils.isNumeric( strNextSchedule ) )
         {
             long lNextSchedule = Long.parseLong( strNextSchedule );
@@ -80,8 +78,7 @@ public class ExportDaemon extends Daemon
                 doExportData( );
                 // We update the next schedule
                 lNextSchedule = new Date( ).getTime( ) + Long.parseLong( getDaemonInterval( ) );
-                DatastoreService.setInstanceDataValue( PARAMETER_KEY_DAEMON_NEXT_SCHEDULE,
-                        Long.toString( lNextSchedule ) );
+                DatastoreService.setInstanceDataValue( PARAMETER_KEY_DAEMON_NEXT_SCHEDULE, Long.toString( lNextSchedule ) );
             }
         }
         else
@@ -109,20 +106,19 @@ public class ExportDaemon extends Daemon
         {
             try
             {
-                boolean bRes = ExportManager.doProcessExportIntoFile( strExportFolder + config.getOutputFileName( ),
-                        config.getTableName( ), config.getListColumns( ), config.getXslStylesheetId( ),
-                        config.getPlugin( ) );
+                boolean bRes = ExportManager.doProcessExportIntoFile( strExportFolder + config.getOutputFileName( ), config.getTableName( ),
+                        config.getListColumns( ), config.getXslStylesheetId( ), config.getPlugin( ) );
                 if ( bRes )
                 {
                     nExportSuccess++;
                 }
                 else
                 {
-                    AppLogService.error( "The file '" + config.getOutputFileName( )
-                            + "' was NOT filled with data of the table '" + config.getTableName( ) + "'" );
+                    AppLogService
+                            .error( "The file '" + config.getOutputFileName( ) + "' was NOT filled with data of the table '" + config.getTableName( ) + "'" );
                 }
             }
-            catch ( Exception e )
+            catch( Exception e )
             {
                 AppLogService.error( e.getMessage( ), e );
             }
@@ -132,6 +128,7 @@ public class ExportDaemon extends Daemon
 
     /**
      * Get the IAutomaticExportConfigDAO
+     * 
      * @return The IAutomaticExportConfigDAO
      */
     private IAutomaticExportConfigDAO getAutomaticExportConfigDAO( )
@@ -145,9 +142,8 @@ public class ExportDaemon extends Daemon
 
     /**
      * Get the next scheduled export
-     * @return A string describing the next scheduled export, in milliseconds
-     *         format. The string may be null or empty if there is no next
-     *         schedule
+     * 
+     * @return A string describing the next scheduled export, in milliseconds format. The string may be null or empty if there is no next schedule
      */
     public static String getDaemonNextSchedule( )
     {
@@ -156,7 +152,9 @@ public class ExportDaemon extends Daemon
 
     /**
      * Set the next schedule of the daemon
-     * @param dateNextSchedule The next schedule of the daemon
+     * 
+     * @param dateNextSchedule
+     *            The next schedule of the daemon
      */
     public static void setDaemonNextSchedule( Date dateNextSchedule )
     {
@@ -168,7 +166,9 @@ public class ExportDaemon extends Daemon
 
     /**
      * Set the next schedule of the daemon
-     * @param lNextSchedule The next schedule of the daemon in milliseconds
+     * 
+     * @param lNextSchedule
+     *            The next schedule of the daemon in milliseconds
      */
     public static void setDaemonNextSchedule( long lNextSchedule )
     {
@@ -177,16 +177,15 @@ public class ExportDaemon extends Daemon
 
     /**
      * Get the interval of time between exports
-     * @return The interval of time between exports. The returned value is
-     *         assured o be a parsable long
+     * 
+     * @return The interval of time between exports. The returned value is assured o be a parsable long
      */
     public static String getDaemonInterval( )
     {
-        String strDaemonInterval = DatastoreService.getInstanceDataValue( PARAMETER_KEY_DAEMON_INTERVAL,
-                CONSTANT_DEFAULT_DAEMON_INTERVAL );
+        String strDaemonInterval = DatastoreService.getInstanceDataValue( PARAMETER_KEY_DAEMON_INTERVAL, CONSTANT_DEFAULT_DAEMON_INTERVAL );
         if ( strDaemonInterval == null || !StringUtils.isNumeric( strDaemonInterval ) )
         {
-            // If the value retrieved is null or not numeric, we restore the default value 
+            // If the value retrieved is null or not numeric, we restore the default value
             strDaemonInterval = CONSTANT_DEFAULT_DAEMON_INTERVAL;
             DatastoreService.setInstanceDataValue( PARAMETER_KEY_DAEMON_INTERVAL, strDaemonInterval );
         }
@@ -195,7 +194,9 @@ public class ExportDaemon extends Daemon
 
     /**
      * Set the interval of time between exports
-     * @param lInterval The interval of time between exports
+     * 
+     * @param lInterval
+     *            The interval of time between exports
      */
     public static void setDaemonInterval( long lInterval )
     {

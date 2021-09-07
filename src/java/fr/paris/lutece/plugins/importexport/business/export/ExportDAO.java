@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,6 @@ import java.util.Locale;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
 
-
 /**
  * DAO to export data from a database table
  */
@@ -65,11 +64,14 @@ public class ExportDAO extends AbstractImportExportDAO
 
     /**
      * Get the list of rows of a table of the database.
-     * @param strTableName The name of the table to get data from
-     * @param listColumns The list of columns to get
-     * @param plugin The plugin to use the pool of
-     * @return The list of rows containing the requested columns of the given
-     *         table
+     * 
+     * @param strTableName
+     *            The name of the table to get data from
+     * @param listColumns
+     *            The list of columns to get
+     * @param plugin
+     *            The plugin to use the pool of
+     * @return The list of rows containing the requested columns of the given table
      */
     public List<RowExportData> getDataFromTable( String strTableName, List<String> listColumns, Plugin plugin )
     {
@@ -95,7 +97,7 @@ public class ExportDAO extends AbstractImportExportDAO
                 listRowExportData.add( rowData );
             }
         }
-        catch ( AppException e )
+        catch( AppException e )
         {
             AppLogService.error( e.getMessage( ), e );
         }
@@ -108,8 +110,11 @@ public class ExportDAO extends AbstractImportExportDAO
 
     /**
      * Get the SQL string to select data from the given table
-     * @param strTableName The name of the table
-     * @param listColumns The list of columns to get
+     * 
+     * @param strTableName
+     *            The name of the table
+     * @param listColumns
+     *            The list of columns to get
      * @return the SQL SELECT string
      */
     private String getSqlSelect( String strTableName, List<String> listColumns )
@@ -135,55 +140,58 @@ public class ExportDAO extends AbstractImportExportDAO
 
     /**
      * Get the value of an element from a daoUtil.
-     * @param daoUtil The daoUtil to get the value from
-     * @param columnType The column type of the element to get
-     * @param nIndex The index of the element in the DAO.
-     * @return The string representation of the element, or an empty string if
-     *         the value could not be retrieved
+     * 
+     * @param daoUtil
+     *            The daoUtil to get the value from
+     * @param columnType
+     *            The column type of the element to get
+     * @param nIndex
+     *            The index of the element in the DAO.
+     * @return The string representation of the element, or an empty string if the value could not be retrieved
      */
     private String getElementValue( DAOUtil daoUtil, ColumnType columnType, int nIndex )
     {
         String strResult = StringUtils.EMPTY;
-        switch ( columnType )
+        switch( columnType )
         {
-        case TYPE_INT:
-            int nValue = daoUtil.getInt( nIndex );
-            strResult = Integer.toString( nValue );
-            break;
-        case TYPE_STRING:
-            strResult = daoUtil.getString( nIndex );
-            break;
-        case TYPE_LONG:
-            long lValue = daoUtil.getLong( nIndex );
-            strResult = Long.toString( lValue );
-            break;
-        case TYPE_TIMESTAMP:
-            Timestamp timestamp = daoUtil.getTimestamp( nIndex );
-            if ( timestamp != null )
-            {
-                strResult = Long.toString( timestamp.getTime( ) );
-            }
-            break;
-        case TYPE_DATE:
-            Date date = daoUtil.getDate( nIndex );
-            if ( date != null )
-            {
-                strResult = DateFormat.getDateInstance( ).format( date );
-            }
-            break;
-        case TYPE_BYTE:
-            byte[] bytesValue = daoUtil.getBytes( nIndex );
-            if ( bytesValue != null )
-            {
-                strResult = String.valueOf( Hex.encodeHex( bytesValue ) );
-            }
-            break;
-        case TYPE_DOUBLE:
-            double dValue = daoUtil.getDouble( nIndex );
-            strResult = Double.toString( dValue );
-            break;
-        default:
-            AppLogService.error( "Error : unknown column type !" );
+            case TYPE_INT:
+                int nValue = daoUtil.getInt( nIndex );
+                strResult = Integer.toString( nValue );
+                break;
+            case TYPE_STRING:
+                strResult = daoUtil.getString( nIndex );
+                break;
+            case TYPE_LONG:
+                long lValue = daoUtil.getLong( nIndex );
+                strResult = Long.toString( lValue );
+                break;
+            case TYPE_TIMESTAMP:
+                Timestamp timestamp = daoUtil.getTimestamp( nIndex );
+                if ( timestamp != null )
+                {
+                    strResult = Long.toString( timestamp.getTime( ) );
+                }
+                break;
+            case TYPE_DATE:
+                Date date = daoUtil.getDate( nIndex );
+                if ( date != null )
+                {
+                    strResult = DateFormat.getDateInstance( ).format( date );
+                }
+                break;
+            case TYPE_BYTE:
+                byte [ ] bytesValue = daoUtil.getBytes( nIndex );
+                if ( bytesValue != null )
+                {
+                    strResult = String.valueOf( Hex.encodeHex( bytesValue ) );
+                }
+                break;
+            case TYPE_DOUBLE:
+                double dValue = daoUtil.getDouble( nIndex );
+                strResult = Double.toString( dValue );
+                break;
+            default:
+                AppLogService.error( "Error : unknown column type !" );
         }
         return strResult;
     }

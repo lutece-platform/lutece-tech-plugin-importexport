@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,10 +39,8 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 
 import java.util.Locale;
 
-
 /**
- * Service that allow to import data. This service implements the Runnable
- * interface.
+ * Service that allow to import data. This service implements the Runnable interface.
  */
 public class RunnableImportService implements Runnable
 {
@@ -62,20 +60,24 @@ public class RunnableImportService implements Runnable
 
     /**
      * Service to asynchronously import data
-     * @param importSource The data source to get data from
-     * @param strTableName The name of the table
-     * @param plugin The plugin associated with the pool the table of the
-     *            database is in.
-     * @param locale The locale to display messages in
-     * @param bUpdateExistingRows Indicates whether existing rows should be
-     *            updated (true) or ignored (false)
-     * @param bStopOnErrors True to stop when an error occurred, false to skip
-     *            the item and continue
-     * @param bEmptyTable True to empty the table before importing data, false
-     *            otherwise
+     * 
+     * @param importSource
+     *            The data source to get data from
+     * @param strTableName
+     *            The name of the table
+     * @param plugin
+     *            The plugin associated with the pool the table of the database is in.
+     * @param locale
+     *            The locale to display messages in
+     * @param bUpdateExistingRows
+     *            Indicates whether existing rows should be updated (true) or ignored (false)
+     * @param bStopOnErrors
+     *            True to stop when an error occurred, false to skip the item and continue
+     * @param bEmptyTable
+     *            True to empty the table before importing data, false otherwise
      */
-    public RunnableImportService( IImportSource importSource, String strTableName, Plugin plugin, Locale locale,
-            boolean bUpdateExistingRows, boolean bStopOnErrors, boolean bEmptyTable )
+    public RunnableImportService( IImportSource importSource, String strTableName, Plugin plugin, Locale locale, boolean bUpdateExistingRows,
+            boolean bStopOnErrors, boolean bEmptyTable )
     {
         this._importSource = importSource;
         this._strTableName = strTableName;
@@ -95,10 +97,9 @@ public class RunnableImportService implements Runnable
         try
         {
             _nStatus = STATUS_WORKING;
-            _importResult = ImportManager.doProcessImport( _importSource, _strTableName, _bUpdateExistingRows,
-                    _bStopOnErrors, _bEmptyTable, _plugin, _locale );
+            _importResult = ImportManager.doProcessImport( _importSource, _strTableName, _bUpdateExistingRows, _bStopOnErrors, _bEmptyTable, _plugin, _locale );
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
             AppLogService.error( e.getMessage( ), e );
         }
@@ -110,9 +111,9 @@ public class RunnableImportService implements Runnable
 
     /**
      * Get the status of the service.
-     * @return {@link #STATUS_QUEUED} if the serviced has not been started,
-     *         {@link #STATUS_WORKING} if it is executing, or
-     *         {@link #STATUS_FINISHED} if its execution has ended.
+     * 
+     * @return {@link #STATUS_QUEUED} if the serviced has not been started, {@link #STATUS_WORKING} if it is executing, or {@link #STATUS_FINISHED} if its
+     *         execution has ended.
      */
     public int getServiceStatus( )
     {
@@ -121,8 +122,8 @@ public class RunnableImportService implements Runnable
 
     /**
      * Get the result of the importation of this service
-     * @return The result of the importation of this service, or null if the
-     *         import is not complete or if an error occurred
+     * 
+     * @return The result of the importation of this service, or null if the import is not complete or if an error occurred
      */
     public ImportResult getImportResult( )
     {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -75,7 +75,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 
-
 /**
  * This class provides the user interface to export data from the database
  */
@@ -136,8 +135,7 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
 
     private static final String CONSTANT_SEMICOLON = ";";
 
-    private IAutomaticExportConfigDAO _automaticExportConfigDAO = SpringContextService
-            .getBean( ExportManager.BEAN_NAME_AUTOMATIC_EXPORT_CONFIG_DAO );
+    private IAutomaticExportConfigDAO _automaticExportConfigDAO = SpringContextService.getBean( ExportManager.BEAN_NAME_AUTOMATIC_EXPORT_CONFIG_DAO );
 
     /**
      * Creates a new ExportDataJspBean object.
@@ -148,7 +146,9 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
 
     /**
      * Get the export data page
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The HTML content to display
      */
     public String getExportData( HttpServletRequest request )
@@ -189,8 +189,7 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
         ReferenceList refListXslExport = XslExportHome.getRefListByPlugin( ImportExportPlugin.getPlugin( ) );
         model.put( MARK_LIST_XSL_EXPORT, refListXslExport );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_EXPORT_DATA,
-                AdminUserService.getLocale( request ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_EXPORT_DATA, AdminUserService.getLocale( request ), model );
 
         setPageTitleProperty( PROPERTY_MESSAGE_EXPORT_DATA_PAGE_TITLE );
 
@@ -199,10 +198,12 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
 
     /**
      * Get the page to choose which columns of the table to export
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The HTML content to display
-     * @throws AccessDeniedException If the database table has not been declared
-     *             as an exportable table
+     * @throws AccessDeniedException
+     *             If the database table has not been declared as an exportable table
      */
     public String getExportColumns( HttpServletRequest request ) throws AccessDeniedException
     {
@@ -222,8 +223,7 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
         }
         if ( !bAuthorizedTable )
         {
-            throw new AccessDeniedException( "The database table '" + strTableName
-                    + "' has NOT been decalred as an exportable table" );
+            throw new AccessDeniedException( "The database table '" + strTableName + "' has NOT been decalred as an exportable table" );
         }
         Map<String, Object> model = new HashMap<String, Object>( );
 
@@ -233,8 +233,7 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
         List<String> listColumns = ExportDAO.getTableColumnsNames( strTableName, plugin );
         model.put( MARK_COLUMNS, listColumns );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_EXPORT_DATA_SELECT_COLUMNS,
-                AdminUserService.getLocale( request ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_EXPORT_DATA_SELECT_COLUMNS, AdminUserService.getLocale( request ), model );
 
         setPageTitleProperty( PROPERTY_MESSAGE_EXPORT_DATA_COLUMNS_SELECTION_PAGE_TITLE );
 
@@ -243,11 +242,14 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
 
     /**
      * Do export data from a database table and start a download of the export
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The next URL to redirect to
-     * @throws AccessDeniedException If the database table has not been declared
-     *             as an exportable table
-     * @throws IOException If an IOException occurs
+     * @throws AccessDeniedException
+     *             If the database table has not been declared as an exportable table
+     * @throws IOException
+     *             If an IOException occurs
      */
     public String doExportData( HttpServletRequest request ) throws AccessDeniedException, IOException
     {
@@ -267,15 +269,13 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
         }
         if ( !bAuthorizedTable )
         {
-            throw new AccessDeniedException( "The database table '" + strTableName
-                    + "' has NOT been decalred as an exportable table" );
+            throw new AccessDeniedException( "The database table '" + strTableName + "' has NOT been decalred as an exportable table" );
         }
 
-        String[] strColumns = request.getParameterValues( PARAMETER_COLUMNS );
+        String [ ] strColumns = request.getParameterValues( PARAMETER_COLUMNS );
         if ( strColumns == null || strColumns.length == 0 )
         {
-            return AdminMessageService
-                    .getMessageUrl( request, MESSAGE_ERROR_NO_COLUMN_SELECTED, AdminMessage.TYPE_STOP );
+            return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_NO_COLUMN_SELECTED, AdminMessage.TYPE_STOP );
         }
         List<String> listColumns = new ArrayList<String>( strColumns.length );
         for ( String strColumn : strColumns )
@@ -288,26 +288,25 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
         {
             nXslExportId = Integer.parseInt( strXslExportId );
         }
-        ExportManager.registerAsynchronousExport( strTableName, listColumns, nXslExportId, plugin,
-                AdminUserService.getAdminUser( request ) );
+        ExportManager.registerAsynchronousExport( strTableName, listColumns, nXslExportId, plugin, AdminUserService.getAdminUser( request ) );
         return AppPathService.getBaseUrl( request ) + JSP_URL_EXPORT_WAITING_PAGE;
     }
 
     /**
-     * Get the waiting page that indicates that an export is processing, or the
-     * result page if the export has ended.
-     * @param request The request
-     * @param response The response
-     * @return The HTML content to display, or null if a download has be
-     *         initialized
+     * Get the waiting page that indicates that an export is processing, or the result page if the export has ended.
+     * 
+     * @param request
+     *            The request
+     * @param response
+     *            The response
+     * @return The HTML content to display, or null if a download has be initialized
      */
     public String getExportProcessing( HttpServletRequest request, HttpServletResponse response )
     {
         AdminUser admin = AdminUserService.getAdminUser( request );
         if ( ExportManager.hasExportInProcess( admin.getUserId( ) ) )
         {
-            HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_EXPORT_WAITING,
-                    AdminUserService.getLocale( request ) );
+            HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_EXPORT_WAITING, AdminUserService.getLocale( request ) );
             return getAdminPage( template.getHtml( ) );
         }
 
@@ -315,12 +314,13 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
     }
 
     /**
-     * Get the page that display the result of an import, or the export data
-     * main page if no export result is available for the given user
-     * @param request The request
-     * @param response The response
-     * @return The HTML content to display, or null if a download has be
-     *         initialized
+     * Get the page that display the result of an import, or the export data main page if no export result is available for the given user
+     * 
+     * @param request
+     *            The request
+     * @param response
+     *            The response
+     * @return The HTML content to display, or null if a download has be initialized
      */
     public String getExportResult( HttpServletRequest request, HttpServletResponse response )
     {
@@ -332,7 +332,7 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
                 response.sendRedirect( AppPathService.getBaseUrl( request ) + strFileURl );
                 return null;
             }
-            catch ( IOException e )
+            catch( IOException e )
             {
                 AppLogService.error( e.getMessage( ), e );
             }
@@ -342,7 +342,9 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
 
     /**
      * Get the page to manage automatic exports
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The HTML content to display
      */
     public String getAutomaticExportConfiguration( HttpServletRequest request )
@@ -362,12 +364,12 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
             dateNextSchedule = new Date( );
         }
 
-        DataTableManager<AutomaticExportConfig> tableManager = (DataTableManager<AutomaticExportConfig>) request
-                .getSession( ).getAttribute( PROPERTY_SESSION_AUTOMATIC_EXPORT_TABLE_MANAGER );
+        DataTableManager<AutomaticExportConfig> tableManager = (DataTableManager<AutomaticExportConfig>) request.getSession( )
+                .getAttribute( PROPERTY_SESSION_AUTOMATIC_EXPORT_TABLE_MANAGER );
         if ( tableManager == null )
         {
-            tableManager = new DataTableManager<AutomaticExportConfig>( JSP_URL_AUTOMATIC_EXPORT_CONFIGURATION,
-                    JSP_URL_AUTOMATIC_EXPORT_CONFIGURATION, 50, true );
+            tableManager = new DataTableManager<AutomaticExportConfig>( JSP_URL_AUTOMATIC_EXPORT_CONFIGURATION, JSP_URL_AUTOMATIC_EXPORT_CONFIGURATION, 50,
+                    true );
             tableManager.addColumn( PROPERTY_AUTOMATIC_EXPORT_ID, "id", true );
             tableManager.addColumn( PROPERTY_AUTOMATIC_EXPORT_TABLE_NAME, "tableName", true );
             tableManager.addColumn( PROPERTY_AUTOMATIC_EXPORT_OUTPUT_FILE_NAME, "outputFileName", true );
@@ -382,8 +384,7 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
         model.put( MARK_DAEMON_NEXT_SCHEDULE, df.format( dateNextSchedule ) );
         model.put( MARK_DAEMON_INTERVAL, lInterval / 1000 );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_AUTOMATIC_EXPORT_CONFIGURATION,
-                AdminUserService.getLocale( request ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_AUTOMATIC_EXPORT_CONFIGURATION, AdminUserService.getLocale( request ), model );
 
         setPageTitleProperty( PROPERTY_MESSAGE_AUTOMATIC_EXPORT_CONFIGURATION_PAGE_TITLE );
         String strContent = template.getHtml( );
@@ -393,7 +394,9 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
 
     /**
      * Do modify the configuration of automatic export
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The next URL to redirect to
      */
     public String doModifyAutomaticExport( HttpServletRequest request )
@@ -402,11 +405,9 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
         {
             String strDaemonNextSchedule = request.getParameter( MARK_DAEMON_NEXT_SCHEDULE );
             String strInterval = request.getParameter( MARK_DAEMON_INTERVAL );
-            if ( StringUtils.isEmpty( strDaemonNextSchedule ) || StringUtils.isEmpty( strInterval )
-                    || !StringUtils.isNumeric( strInterval ) )
+            if ( StringUtils.isEmpty( strDaemonNextSchedule ) || StringUtils.isEmpty( strInterval ) || !StringUtils.isNumeric( strInterval ) )
             {
-                return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_MANDATORY_FIELDS,
-                        AdminMessage.TYPE_ERROR );
+                return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_MANDATORY_FIELDS, AdminMessage.TYPE_ERROR );
             }
             long lInterval = Long.parseLong( strInterval );
             try
@@ -417,7 +418,7 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
                 ExportDaemon.setDaemonInterval( lInterval * 1000 );
 
             }
-            catch ( ParseException e )
+            catch( ParseException e )
             {
                 return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DATE_FORMAT, AdminMessage.TYPE_ERROR );
             }
@@ -427,10 +428,12 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
 
     /**
      * Get the page to create or modify an export config
-     * @param request The request
-     * @param response The response
-     * @return The HTML content to display, or null if a redirection has already
-     *         been send
+     * 
+     * @param request
+     *            The request
+     * @param response
+     *            The response
+     * @return The HTML content to display, or null if a redirection has already been send
      */
     public String getCreateModifyExportConfig( HttpServletRequest request, HttpServletResponse response )
     {
@@ -441,7 +444,7 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
             {
                 response.sendRedirect( AppPathService.getBaseUrl( request ) + JSP_URL_AUTOMATIC_EXPORT_CONFIGURATION );
             }
-            catch ( IOException e )
+            catch( IOException e )
             {
                 AppLogService.error( e.getMessage( ), e );
             }
@@ -453,7 +456,7 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
             {
                 response.sendRedirect( doCreateModifyExportConfig( request ) );
             }
-            catch ( IOException e )
+            catch( IOException e )
             {
                 AppLogService.error( e.getMessage( ), e );
             }
@@ -493,8 +496,7 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
                 model.put( MARK_CONF, config );
                 if ( StringUtils.isNotEmpty( config.getTableName( ) ) )
                 {
-                    List<String> listColumns = ExportDAO.getTableColumnsNames( config.getTableName( ),
-                            config.getPlugin( ) );
+                    List<String> listColumns = ExportDAO.getTableColumnsNames( config.getTableName( ), config.getPlugin( ) );
                     model.put( MARK_COLUMNS, listColumns );
                 }
             }
@@ -535,14 +537,15 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
         ReferenceList refListXslExport = XslExportHome.getRefListByPlugin( ImportExportPlugin.getPlugin( ) );
         model.put( MARK_LIST_XSL_EXPORT, refListXslExport );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_MODIFY_EXPORT_CONFIG,
-                AdminUserService.getLocale( request ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_MODIFY_EXPORT_CONFIG, AdminUserService.getLocale( request ), model );
         return getAdminPage( template.getHtml( ) );
     }
 
     /**
      * Do create or modify an export config
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The next URL to redirect to
      */
     public String doCreateModifyExportConfig( HttpServletRequest request )
@@ -553,19 +556,16 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
 
             if ( StringUtils.isEmpty( config.getTableName( ) ) || StringUtils.isEmpty( config.getOutputFileName( ) ) )
             {
-                return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_MANDATORY_FIELDS,
-                        AdminMessage.TYPE_ERROR );
+                return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_MANDATORY_FIELDS, AdminMessage.TYPE_ERROR );
             }
             if ( config.getListColumns( ) == null || config.getListColumns( ).size( ) == 0 )
             {
-                return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_NO_COLUMN_SELECTED,
-                        AdminMessage.TYPE_ERROR );
+                return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_NO_COLUMN_SELECTED, AdminMessage.TYPE_ERROR );
             }
             List<String> listColumns = ExportDAO.getTableColumnsNames( config.getTableName( ), config.getPlugin( ) );
             if ( !listColumns.containsAll( config.getListColumns( ) ) )
             {
-                return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_UPDATE_COLUMNS,
-                        AdminMessage.TYPE_ERROR );
+                return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_UPDATE_COLUMNS, AdminMessage.TYPE_ERROR );
             }
 
             if ( config.getId( ) > 0 )
@@ -582,7 +582,9 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
 
     /**
      * Get an export config from an HTTP request
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The export config containing data in the request
      */
     private AutomaticExportConfig getConfigFromRequest( HttpServletRequest request )
@@ -592,7 +594,7 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
         String strOutputFileName = request.getParameter( PARAMETER_OUTPUT_FILE_NAME );
         String strPluginName = request.getParameter( PARAMETER_PLUGIN_NAME );
         String strXslExport = request.getParameter( PARAMETER_XSL_EXPORT_ID );
-        String[] strListColumns = request.getParameterValues( PARAMETER_COLUMNS );
+        String [ ] strListColumns = request.getParameterValues( PARAMETER_COLUMNS );
         AutomaticExportConfig config = new AutomaticExportConfig( );
         if ( StringUtils.isNotEmpty( strIdConfig ) && StringUtils.isNumeric( strIdConfig ) )
         {
@@ -621,20 +623,23 @@ public class ExportDataJspBean extends AdminFeaturesPageJspBean
 
     /**
      * Confirm the removal of an automatic export configuration
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The next URL to redirect to
      */
     public String confirmDeleteExportConfig( HttpServletRequest request )
     {
         UrlItem urlItem = new UrlItem( JSP_URL_DO_DELETE_EXPORT_CONFIG );
         urlItem.addParameter( MARK_ID_CONFIG, request.getParameter( MARK_ID_CONFIG ) );
-        return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_DELETE_EXPORT_CONFIG, urlItem.getUrl( ),
-                AdminMessage.TYPE_CONFIRMATION );
+        return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_DELETE_EXPORT_CONFIG, urlItem.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
     }
 
     /**
      * Do remove an automatic export configuration
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The next URL to redirect to
      */
     public String doDeleteExportConfig( HttpServletRequest request )

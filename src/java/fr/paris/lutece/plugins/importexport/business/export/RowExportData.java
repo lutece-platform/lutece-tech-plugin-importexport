@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,6 @@ import fr.paris.lutece.plugins.importexport.business.ImportExportElement;
 
 import java.util.List;
 
-
 /**
  * This class represents data to export
  */
@@ -47,7 +46,9 @@ public class RowExportData
 
     /**
      * Creates a new RowExportData
-     * @param listExportElements The list of elements of this row
+     * 
+     * @param listExportElements
+     *            The list of elements of this row
      */
     public RowExportData( List<ImportExportElement> listExportElements )
     {
@@ -56,6 +57,7 @@ public class RowExportData
 
     /**
      * Get the list of import elements
+     * 
      * @return The list of import elements
      */
     public List<ImportExportElement> getListExportElements( )
@@ -65,7 +67,9 @@ public class RowExportData
 
     /**
      * Set the list of import elements
-     * @param listExportElements The list of import elements
+     * 
+     * @param listExportElements
+     *            The list of import elements
      */
     public void setListExportElements( List<ImportExportElement> listExportElements )
     {

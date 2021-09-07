@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,6 @@ import java.util.Map;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 
-
 /**
  * Manager of imports
  */
@@ -76,7 +75,9 @@ public final class ImportManager
 
     /**
      * Register an import source factory
-     * @param importSourceFactory The import source factory to register
+     * 
+     * @param importSourceFactory
+     *            The import source factory to register
      */
     public static void registerImportSourceFactory( IImportSourceFactory importSourceFactory )
     {
@@ -84,13 +85,12 @@ public final class ImportManager
     }
 
     /**
-     * Get an import source for a file item. The import source is instantiated
-     * from registered factories that are compatible with the given file
-     * extension.
-     * @param fileItem The file item to read data from
-     * @return The import source, or null if no factories are associated to the
-     *         given file extension or if an error occurs during the
-     *         instantiation of the import source.
+     * Get an import source for a file item. The import source is instantiated from registered factories that are compatible with the given file extension.
+     * 
+     * @param fileItem
+     *            The file item to read data from
+     * @return The import source, or null if no factories are associated to the given file extension or if an error occurs during the instantiation of the
+     *         import source.
      */
     public static IImportSource getImportSource( FileItem fileItem )
     {
@@ -117,13 +117,12 @@ public final class ImportManager
     }
 
     /**
-     * Get an import source for a file. The import source is instantiated
-     * from registered factories that are compatible with the given file
-     * extension.
-     * @param file The file to read data from
-     * @return The import source, or null if no factories are associated to the
-     *         given file extension or if an error occurs during the
-     *         instantiation of the import source.
+     * Get an import source for a file. The import source is instantiated from registered factories that are compatible with the given file extension.
+     * 
+     * @param file
+     *            The file to read data from
+     * @return The import source, or null if no factories are associated to the given file extension or if an error occurs during the instantiation of the
+     *         import source.
      */
     public static IImportSource getImportSource( File file )
     {
@@ -150,23 +149,26 @@ public final class ImportManager
     }
 
     /**
-     * Do process the import of data from an import source to a given table in
-     * the database.
-     * @param importSource The import source to get data from
-     * @param strTableName The name of the table in the database to import data
-     *            to
-     * @param bUpdateExistingRows True to update existing rows, false to ignore
-     *            them
-     * @param bStopOnErrors True to stop when an error occurred, false to skip
-     *            the item and continue
-     * @param bEmptyTable True to empty the table before importing data, false
-     *            otherwise
-     * @param plugin The plugin to get the pool from
-     * @param locale The locale
+     * Do process the import of data from an import source to a given table in the database.
+     * 
+     * @param importSource
+     *            The import source to get data from
+     * @param strTableName
+     *            The name of the table in the database to import data to
+     * @param bUpdateExistingRows
+     *            True to update existing rows, false to ignore them
+     * @param bStopOnErrors
+     *            True to stop when an error occurred, false to skip the item and continue
+     * @param bEmptyTable
+     *            True to empty the table before importing data, false otherwise
+     * @param plugin
+     *            The plugin to get the pool from
+     * @param locale
+     *            The locale
      * @return The result of the import
      */
-    public static ImportResult doProcessImport( IImportSource importSource, String strTableName,
-            boolean bUpdateExistingRows, boolean bStopOnErrors, boolean bEmptyTable, Plugin plugin, Locale locale )
+    public static ImportResult doProcessImport( IImportSource importSource, String strTableName, boolean bUpdateExistingRows, boolean bStopOnErrors,
+            boolean bEmptyTable, Plugin plugin, Locale locale )
     {
         List<ImportExportElement> listElements;
         int nCreatedElements = 0;
@@ -178,7 +180,7 @@ public final class ImportManager
         {
             importElementDAO = new ImportDataDAO( importSource.getColumnsName( ), strTableName, plugin, locale );
         }
-        catch ( AppException e )
+        catch( AppException e )
         {
             AppLogService.info( e.getMessage( ) );
             return createErrorImportResult( e );
@@ -193,11 +195,11 @@ public final class ImportManager
                 {
                     importElementDAO.emptyTable( );
                 }
-                catch ( AppException e )
+                catch( AppException e )
                 {
                     AppLogService.error( e.getMessage( ), e );
                 }
-                catch ( SQLException e )
+                catch( SQLException e )
                 {
                     AppLogService.error( e.getMessage( ), e );
                 }
@@ -224,16 +226,15 @@ public final class ImportManager
                     }
                     else
                     {
-                        // If it doesn't exist, we insert a new one 
+                        // If it doesn't exist, we insert a new one
                         importElementDAO.insertElement( listElements );
                         nCreatedElements++;
                     }
 
                 }
-                catch ( AppException e )
+                catch( AppException e )
                 {
-                    ImportMessage importMessage = new ImportMessage( e.getMessage( ), ImportMessage.STATUS_ERROR,
-                            nItemNumber );
+                    ImportMessage importMessage = new ImportMessage( e.getMessage( ), ImportMessage.STATUS_ERROR, nItemNumber );
                     listErrors.add( importMessage );
                     nIgnoredElements++;
                     if ( bStopOnErrors )
@@ -242,10 +243,9 @@ public final class ImportManager
                         return new ImportResult( nCreatedElements, nUpdatedElements, nIgnoredElements, listErrors );
                     }
                 }
-                catch ( SQLException e )
+                catch( SQLException e )
                 {
-                    ImportMessage importMessage = new ImportMessage( e.getMessage( ), ImportMessage.STATUS_ERROR,
-                            nItemNumber );
+                    ImportMessage importMessage = new ImportMessage( e.getMessage( ), ImportMessage.STATUS_ERROR, nItemNumber );
                     listErrors.add( importMessage );
                     nIgnoredElements++;
                     if ( bStopOnErrors )
@@ -257,7 +257,7 @@ public final class ImportManager
             }
             importElementDAO.commitTransaction( );
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
             AppLogService.error( e.getMessage( ), e );
             importElementDAO.rollbackTransaction( );
@@ -268,27 +268,30 @@ public final class ImportManager
     }
 
     /**
-     * Do process an asynchronous import of data from an import source to a
-     * given table in the database.
-     * @param importSource The import source to get data from
-     * @param strTableName The name of the table in the database to import data
-     *            to
-     * @param plugin The plugin to get the pool from
-     * @param locale The locale
-     * @param bUpdateExistingRows True to update existing rows, false to ignore
-     *            them
-     * @param bStopOnErrors True to stop when an error occurred, false to skip
-     *            the item and continue
-     * @param bEmptyTable True to empty the table before importing data, false
-     *            otherwise
-     * @param admin The admin user that started the import, or null if the
-     *            import was started by a daemon
+     * Do process an asynchronous import of data from an import source to a given table in the database.
+     * 
+     * @param importSource
+     *            The import source to get data from
+     * @param strTableName
+     *            The name of the table in the database to import data to
+     * @param plugin
+     *            The plugin to get the pool from
+     * @param locale
+     *            The locale
+     * @param bUpdateExistingRows
+     *            True to update existing rows, false to ignore them
+     * @param bStopOnErrors
+     *            True to stop when an error occurred, false to skip the item and continue
+     * @param bEmptyTable
+     *            True to empty the table before importing data, false otherwise
+     * @param admin
+     *            The admin user that started the import, or null if the import was started by a daemon
      */
-    public static void doProcessAsynchronousImport( IImportSource importSource, String strTableName, Plugin plugin,
-            Locale locale, boolean bUpdateExistingRows, boolean bStopOnErrors, boolean bEmptyTable, AdminUser admin )
+    public static void doProcessAsynchronousImport( IImportSource importSource, String strTableName, Plugin plugin, Locale locale, boolean bUpdateExistingRows,
+            boolean bStopOnErrors, boolean bEmptyTable, AdminUser admin )
     {
-        RunnableImportService runnableImportService = new RunnableImportService( importSource, strTableName, plugin,
-                locale, bUpdateExistingRows, bStopOnErrors, bEmptyTable );
+        RunnableImportService runnableImportService = new RunnableImportService( importSource, strTableName, plugin, locale, bUpdateExistingRows, bStopOnErrors,
+                bEmptyTable );
         if ( admin != null )
         {
             _mapWorkingRunnableImportServices.put( admin.getUserId( ), runnableImportService );
@@ -298,7 +301,9 @@ public final class ImportManager
 
     /**
      * Check if an admin user has an import processing
-     * @param nAdminId The id of the admin user
+     * 
+     * @param nAdminId
+     *            The id of the admin user
      * @return True if the admin user has an import processing, false otherwise
      */
     public static boolean hasImportInProcess( int nAdminId )
@@ -315,16 +320,16 @@ public final class ImportManager
     }
 
     /**
-     * Get the result of an asynchronous import. The import service is then
-     * removed from the list of current imports
-     * @param nAdminId The id of the user that started the import
+     * Get the result of an asynchronous import. The import service is then removed from the list of current imports
+     * 
+     * @param nAdminId
+     *            The id of the user that started the import
      * @return The result of the import, or null if no result were found
      */
     public static ImportResult getAsynchronousImportResult( int nAdminId )
     {
         RunnableImportService runnableImportService = _mapWorkingRunnableImportServices.get( nAdminId );
-        if ( runnableImportService != null
-                && runnableImportService.getServiceStatus( ) == RunnableImportService.STATUS_FINISHED )
+        if ( runnableImportService != null && runnableImportService.getServiceStatus( ) == RunnableImportService.STATUS_FINISHED )
         {
             ImportResult result = runnableImportService.getImportResult( );
             _mapWorkingRunnableImportServices.remove( nAdminId );
@@ -334,9 +339,10 @@ public final class ImportManager
     }
 
     /**
-     * Creates a new import result from a throwable. The import result has one
-     * error message, which contain the message of the throwable.
-     * @param throwable The throwable to get the message from
+     * Creates a new import result from a throwable. The import result has one error message, which contain the message of the throwable.
+     * 
+     * @param throwable
+     *            The throwable to get the message from
      * @return An import result
      */
     private static ImportResult createErrorImportResult( Throwable throwable )

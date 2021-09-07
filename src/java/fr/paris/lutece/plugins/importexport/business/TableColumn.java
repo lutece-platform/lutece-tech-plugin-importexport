@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,8 +33,6 @@
  */
 package fr.paris.lutece.plugins.importexport.business;
 
-
-
 /**
  * Describes an SQL column
  */
@@ -46,10 +44,13 @@ public class TableColumn
 
     /**
      * Creates a new table column
-     * @param strColumnName The name of the column
-     * @param bIsPrimaryKey True if the column has a primary key constraint,
-     *            false otherwise
-     * @param columnType The type of the column
+     * 
+     * @param strColumnName
+     *            The name of the column
+     * @param bIsPrimaryKey
+     *            True if the column has a primary key constraint, false otherwise
+     * @param columnType
+     *            The type of the column
      */
     public TableColumn( String strColumnName, boolean bIsPrimaryKey, ColumnType columnType )
     {
@@ -60,6 +61,7 @@ public class TableColumn
 
     /**
      * Get the name of the column
+     * 
      * @return The name of the column
      */
     public String getColumnName( )
@@ -69,7 +71,9 @@ public class TableColumn
 
     /**
      * Set the name of the column
-     * @param strColumnName The name of the column
+     * 
+     * @param strColumnName
+     *            The name of the column
      */
     public void setColumnName( String strColumnName )
     {
@@ -78,6 +82,7 @@ public class TableColumn
 
     /**
      * Check if this column has a primary key constraint
+     * 
      * @return True if this column has a primary key constraint, false otherwise
      */
     public boolean getIsPrimaryKey( )
@@ -87,8 +92,9 @@ public class TableColumn
 
     /**
      * Set whether this column has a primary key constraint
-     * @param bIsPrimaryKey True if this column has a primary key constraint,
-     *            false otherwise
+     * 
+     * @param bIsPrimaryKey
+     *            True if this column has a primary key constraint, false otherwise
      */
     public void setIsPrimaryKey( boolean bIsPrimaryKey )
     {
@@ -97,6 +103,7 @@ public class TableColumn
 
     /**
      * Get the type of this column
+     * 
      * @return The type of this column
      */
     public ColumnType getColumnType( )
@@ -106,7 +113,9 @@ public class TableColumn
 
     /**
      * Set the type of this column
-     * @param columnType The type of this column
+     * 
+     * @param columnType
+     *            The type of this column
      */
     public void setColumnType( ColumnType columnType )
     {

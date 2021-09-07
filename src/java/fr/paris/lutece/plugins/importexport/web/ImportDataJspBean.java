@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 
-
 /**
  * This class provides the user interface to import data into the database
  */
@@ -119,7 +118,9 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
 
     /**
      * Get the import data page
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The HTML content to display
      */
     public String getImportData( HttpServletRequest request )
@@ -164,8 +165,7 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
         }
         model.put( MARK_LIST_PLUGIN, refListPlugins );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_IMPORT_DATA,
-                AdminUserService.getLocale( request ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_IMPORT_DATA, AdminUserService.getLocale( request ), model );
 
         setPageTitleProperty( PROPERTY_MESSAGE_IMPORT_DATA_PAGE_TITLE );
 
@@ -174,10 +174,12 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
 
     /**
      * Do import data into the database
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The next URL to redirect to
-     * @throws AccessDeniedException If the table to import data in has not been
-     *             declared as an importable table
+     * @throws AccessDeniedException
+     *             If the table to import data in has not been declared as an importable table
      */
     public String doImportData( HttpServletRequest request ) throws AccessDeniedException
     {
@@ -213,25 +215,22 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
 
             if ( !bAuthorizedTable )
             {
-                throw new AccessDeniedException( "The database table '" + strTableName
-                        + "' has NOT been decalred as an importable table" );
+                throw new AccessDeniedException( "The database table '" + strTableName + "' has NOT been decalred as an importable table" );
             }
 
             IImportSource importSource = ImportManager.getImportSource( fileItem );
             if ( importSource != null )
             {
-                long lThresholdSize = AppPropertiesService.getPropertyLong( PROPERTY_ASYNCHRONOUS_IMPORT_FILE_SIZE,
-                        1048576l );
+                long lThresholdSize = AppPropertiesService.getPropertyLong( PROPERTY_ASYNCHRONOUS_IMPORT_FILE_SIZE, 1048576l );
                 Locale locale = AdminUserService.getLocale( request );
                 if ( fileItem.getSize( ) < lThresholdSize )
                 {
-                    ImportResult result = ImportManager.doProcessImport( importSource, strTableName,
-                            bUpdateExistingRows, bStopOnErrors, bEmptyTable, plugin, locale );
+                    ImportResult result = ImportManager.doProcessImport( importSource, strTableName, bUpdateExistingRows, bStopOnErrors, bEmptyTable, plugin,
+                            locale );
                     request.getSession( ).setAttribute( MARK_SESSION_IMPORT_RESULT, result );
                     return AppPathService.getBaseUrl( request ) + JSP_URL_IMPORT_RESULT;
                 }
-                ImportManager.doProcessAsynchronousImport( importSource, strTableName, plugin, locale,
-                        bUpdateExistingRows, bStopOnErrors, bEmptyTable, admin );
+                ImportManager.doProcessAsynchronousImport( importSource, strTableName, plugin, locale, bUpdateExistingRows, bStopOnErrors, bEmptyTable, admin );
                 return AppPathService.getBaseUrl( request ) + JSP_URL_IMPORT_PROCESSING;
 
             }
@@ -241,10 +240,11 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
     }
 
     /**
-     * Get the waiting page if an import has been started by the user and has
-     * not terminated yet. If there is no running import, then the import result
-     * page is displayed
-     * @param request The request
+     * Get the waiting page if an import has been started by the user and has not terminated yet. If there is no running import, then the import result page is
+     * displayed
+     * 
+     * @param request
+     *            The request
      * @return The HTML content to display
      */
     public String getImportProcessing( HttpServletRequest request )
@@ -252,18 +252,18 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
         AdminUser admin = AdminUserService.getAdminUser( request );
         if ( ImportManager.hasImportInProcess( admin.getUserId( ) ) )
         {
-            HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_IMPORT_WAITING,
-                    AdminUserService.getLocale( request ) );
+            HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_IMPORT_WAITING, AdminUserService.getLocale( request ) );
             return getAdminPage( template.getHtml( ) );
         }
         return getImportResult( request );
     }
 
     /**
-     * Get the import result page. If the user has already displayed results of
-     * imports, or if he has not started any import then page to create import
-     * is displayed instead
-     * @param request The request
+     * Get the import result page. If the user has already displayed results of imports, or if he has not started any import then page to create import is
+     * displayed instead
+     * 
+     * @param request
+     *            The request
      * @return The HTML content to display
      */
     public String getImportResult( HttpServletRequest request )
@@ -285,14 +285,14 @@ public class ImportDataJspBean extends AdminFeaturesPageJspBean
 
         Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_RESULT, result );
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_IMPORT_RESULT,
-                AdminUserService.getLocale( request ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_IMPORT_RESULT, AdminUserService.getLocale( request ), model );
 
         return getAdminPage( template.getHtml( ) );
     }
 
     /**
      * Return the plugin
+     * 
      * @return Plugin
      */
     public Plugin getPlugin( )

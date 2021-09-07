@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,6 @@ import java.util.NoSuchElementException;
 
 import org.apache.commons.lang.StringUtils;
 
-
 /**
  * Abstract DAO to manage imports and exports
  */
@@ -70,18 +69,21 @@ public abstract class AbstractImportExportDAO
     private static final String ERROR_MESSAGE_COLUMN_NOT_FOUND = "importexport.import_data.errors.columnNotFound";
 
     /**
-     * Get the list of columns of a table matching a given list of names. The
-     * result list is sorted in the same order as the list of columns name
-     * @param listColumnNames The list of names of columns to consider
-     * @param strTableName The name of the database table
-     * @param plugin The plugin to use the pool of
-     * @param locale The locale to display errors in
+     * Get the list of columns of a table matching a given list of names. The result list is sorted in the same order as the list of columns name
+     * 
+     * @param listColumnNames
+     *            The list of names of columns to consider
+     * @param strTableName
+     *            The name of the database table
+     * @param plugin
+     *            The plugin to use the pool of
+     * @param locale
+     *            The locale to display errors in
      * @return The list of columns, or an empty list if no columns was found.
-     * @throws AppException If the table does not contain any column whithin a
-     *             name of the columns name list
+     * @throws AppException
+     *             If the table does not contain any column whithin a name of the columns name list
      */
-    protected static List<TableColumn> getTableColumns( List<String> listColumnNames, String strTableName,
-            Plugin plugin, Locale locale ) throws AppException
+    protected static List<TableColumn> getTableColumns( List<String> listColumnNames, String strTableName, Plugin plugin, Locale locale ) throws AppException
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_GET_COLUMNS, plugin );
         daoUtil.setString( 1, strTableName );
@@ -98,8 +100,8 @@ public abstract class AbstractImportExportDAO
             if ( listColumnNames.contains( strColumnName ) )
             {
                 String strColumnType = daoUtil.getString( 2 );
-                TableColumn tableColumn = new TableColumn( strColumnName, StringUtils.equals( strPrimaryKeyName,
-                        strColumnName ), getJavaTypeFromSqlString( strColumnType ) );
+                TableColumn tableColumn = new TableColumn( strColumnName, StringUtils.equals( strPrimaryKeyName, strColumnName ),
+                        getJavaTypeFromSqlString( strColumnType ) );
                 listColumns.add( tableColumn );
             }
         }
@@ -123,7 +125,7 @@ public abstract class AbstractImportExportDAO
                     }
                 }
             }
-            catch ( NoSuchElementException e )
+            catch( NoSuchElementException e )
             {
                 throw new AppException( I18nService.getLocalizedString( ERROR_MESSAGE_COLUMN_NOT_FOUND, locale ) );
             }
@@ -134,10 +136,12 @@ public abstract class AbstractImportExportDAO
 
     /**
      * Get the list of columns names from the database
-     * @param strTableName The name of the table to get columns name from
-     * @param plugin The plugin to use the pool of
-     * @return The list of names of columns of the database, or an empty list if
-     *         no columns was found
+     * 
+     * @param strTableName
+     *            The name of the table to get columns name from
+     * @param plugin
+     *            The plugin to use the pool of
+     * @return The list of names of columns of the database, or an empty list if no columns was found
      */
     public static List<String> getTableColumnsNames( String strTableName, Plugin plugin )
     {
@@ -156,7 +160,9 @@ public abstract class AbstractImportExportDAO
 
     /**
      * Get the type of a column from its description
-     * @param strColumnType The description of the column type
+     * 
+     * @param strColumnType
+     *            The description of the column type
      * @return The column type, or null if no type was found
      */
     protected static ColumnType getJavaTypeFromSqlString( String strColumnType )
@@ -171,34 +177,39 @@ public abstract class AbstractImportExportDAO
         {
             columnType = ColumnType.TYPE_LONG;
         }
-        else if ( StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_INT ) )
-        {
-            columnType = ColumnType.TYPE_INT;
-        }
-        else if ( StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_VARCHAR )
-                || StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_TEXT )
-                || StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_CHARACTER ) )
-        {
-            columnType = ColumnType.TYPE_STRING;
-        }
-        else if ( StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_TIMESTAMP ) )
-        {
-            columnType = ColumnType.TYPE_TIMESTAMP;
-        }
-        else if ( StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_DATE ) )
-        {
-            columnType = ColumnType.TYPE_DATE;
-        }
-        else if ( StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_DOUBLE )
-                || StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_REAL ) )
-        {
-            columnType = ColumnType.TYPE_DOUBLE;
-        }
-        else if ( StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_BYTE )
-                || StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_BLOB ) )
-        {
-            columnType = ColumnType.TYPE_BYTE;
-        }
+        else
+            if ( StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_INT ) )
+            {
+                columnType = ColumnType.TYPE_INT;
+            }
+            else
+                if ( StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_VARCHAR ) || StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_TEXT )
+                        || StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_CHARACTER ) )
+                {
+                    columnType = ColumnType.TYPE_STRING;
+                }
+                else
+                    if ( StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_TIMESTAMP ) )
+                    {
+                        columnType = ColumnType.TYPE_TIMESTAMP;
+                    }
+                    else
+                        if ( StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_DATE ) )
+                        {
+                            columnType = ColumnType.TYPE_DATE;
+                        }
+                        else
+                            if ( StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_DOUBLE )
+                                    || StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_REAL ) )
+                            {
+                                columnType = ColumnType.TYPE_DOUBLE;
+                            }
+                            else
+                                if ( StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_BYTE )
+                                        || StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_BLOB ) )
+                                {
+                                    columnType = ColumnType.TYPE_BYTE;
+                                }
 
         if ( columnType != null )
         {

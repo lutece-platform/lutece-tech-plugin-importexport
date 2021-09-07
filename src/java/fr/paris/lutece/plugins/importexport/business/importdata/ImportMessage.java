@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,8 +43,7 @@ public class ImportMessage
      */
     public static final int STATUS_SKIPPED = 0;
     /**
-     * Status that indicates that an error occurred during the importation of
-     * the item
+     * Status that indicates that an error occurred during the importation of the item
      */
     public static final int STATUS_ERROR = 1;
     /**
@@ -58,9 +57,13 @@ public class ImportMessage
 
     /**
      * Creates a new import message
-     * @param strMessage The message
-     * @param nStatus The {@link #setStatus(int) status} of the message
-     * @param nItemNumber The number of the imported item
+     * 
+     * @param strMessage
+     *            The message
+     * @param nStatus
+     *            The {@link #setStatus(int) status} of the message
+     * @param nItemNumber
+     *            The number of the imported item
      */
     public ImportMessage( String strMessage, int nStatus, int nItemNumber )
     {
@@ -71,6 +74,7 @@ public class ImportMessage
 
     /**
      * Get the message
+     * 
      * @return the message
      */
     public String getMessage( )
@@ -80,7 +84,9 @@ public class ImportMessage
 
     /**
      * Set the message
-     * @param strMessage the message
+     * 
+     * @param strMessage
+     *            the message
      */
     public void setMessage( String strMessage )
     {
@@ -88,14 +94,13 @@ public class ImportMessage
     }
 
     /**
-     * Get the status of the importation of the item described by this
-     * {@link ImportMessage}. Status are :
+     * Get the status of the importation of the item described by this {@link ImportMessage}. Status are :
      * <ul>
      * <li>{@link #STATUS_SKIPPED} if the item was skipped</li>
-     * <li>{@link #STATUS_ERROR} if an error occurred during the importation of
-     * the item</li>
+     * <li>{@link #STATUS_ERROR} if an error occurred during the importation of the item</li>
      * <li>{@link #STATUS_OK} if the item was successfully imported</li>
      * </ul>
+     * 
      * @return The status
      */
     public int getStatus( )
@@ -104,12 +109,12 @@ public class ImportMessage
     }
 
     /**
-     * Set the status of importation of the item described by this
-     * {@link ImportMessage}.
-     * @param nStatus <ul>
+     * Set the status of importation of the item described by this {@link ImportMessage}.
+     * 
+     * @param nStatus
+     *            <ul>
      *            <li>{@link #STATUS_SKIPPED} if the item was skipped</li>
-     *            <li>{@link #STATUS_ERROR} if an error occurred during the
-     *            importation of the item</li>
+     *            <li>{@link #STATUS_ERROR} if an error occurred during the importation of the item</li>
      *            <li>{@link #STATUS_OK} if the item was successfully imported</li>
      *            </ul>
      */
@@ -120,6 +125,7 @@ public class ImportMessage
 
     /**
      * Get the number of the imported item in the data source
+     * 
      * @return the number of the imported item in the data source
      */
     public int getItemNumber( )
@@ -128,9 +134,10 @@ public class ImportMessage
     }
 
     /**
-     * Set the number of the imported item in the data source. This number
-     * should be unique for every row of a data source
-     * @param nItemNumber The imported item number
+     * Set the number of the imported item in the data source. This number should be unique for every row of a data source
+     * 
+     * @param nItemNumber
+     *            The imported item number
      */
     public void setItemNumber( int nItemNumber )
     {
@@ -148,14 +155,16 @@ public class ImportMessage
         {
             sbMessage.append( "Error : " );
         }
-        else if ( _nStatus == STATUS_SKIPPED )
-        {
-            sbMessage.append( "Skipped : " );
-        }
-        else if ( _nStatus == STATUS_OK )
-        {
-            sbMessage.append( "Ok : " );
-        }
+        else
+            if ( _nStatus == STATUS_SKIPPED )
+            {
+                sbMessage.append( "Skipped : " );
+            }
+            else
+                if ( _nStatus == STATUS_OK )
+                {
+                    sbMessage.append( "Ok : " );
+                }
         sbMessage.append( _nItemNumber );
         sbMessage.append( ", " );
         sbMessage.append( _strMessage );

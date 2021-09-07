@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,6 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
-
 /**
  * Daemon to import data
  */
@@ -76,16 +75,13 @@ public class ImportDaemon extends Daemon
             {
                 strSourcePath = strSourcePath + CONSTANT_SLASH;
             }
-            String[] strFiles = directory.list( );
+            String [ ] strFiles = directory.list( );
             if ( strFiles != null && strFiles.length > 0 )
             {
                 String strDatabaseTables = AppPropertiesService.getProperty( PROPERTY_DATABASE_TABLES );
-                boolean bUpdateExistingRows = Boolean.parseBoolean( AppPropertiesService
-                        .getProperty( PROPERTY_DAEMON_UPDATE_EXISTING_ROWS ) );
-                boolean bStopOnErrors = Boolean.parseBoolean( AppPropertiesService
-                        .getProperty( PROPERTY_DAEMON_STOP_ON_ERRORS ) );
-                boolean bEmptyTable = Boolean.parseBoolean( AppPropertiesService
-                        .getProperty( PROPERTY_DAEMON_EMPTY_TABLE_BEFORE_IMPORT ) );
+                boolean bUpdateExistingRows = Boolean.parseBoolean( AppPropertiesService.getProperty( PROPERTY_DAEMON_UPDATE_EXISTING_ROWS ) );
+                boolean bStopOnErrors = Boolean.parseBoolean( AppPropertiesService.getProperty( PROPERTY_DAEMON_STOP_ON_ERRORS ) );
+                boolean bEmptyTable = Boolean.parseBoolean( AppPropertiesService.getProperty( PROPERTY_DAEMON_EMPTY_TABLE_BEFORE_IMPORT ) );
                 for ( String strFileName : strFiles )
                 {
                     File file = new File( strSourcePath + strFileName );
@@ -115,13 +111,12 @@ public class ImportDaemon extends Daemon
                             IImportSource importSource = ImportManager.getImportSource( file );
                             if ( importSource != null )
                             {
-                                ImportResult result = ImportManager.doProcessImport( importSource, strTableName,
-                                        bUpdateExistingRows, bStopOnErrors, bEmptyTable, null, Locale.getDefault( ) );
+                                ImportResult result = ImportManager.doProcessImport( importSource, strTableName, bUpdateExistingRows, bStopOnErrors,
+                                        bEmptyTable, null, Locale.getDefault( ) );
                                 importSource.close( );
                                 // If we extracted some data from the file, we remove it
-                                String strLog = result.getCreatedElements( ) + " element(s) created, "
-                                        + result.getUpdatedElements( ) + " element(s) updated and "
-                                        + result.getIgnoredElements( ) + " element(s) ignored.";
+                                String strLog = result.getCreatedElements( ) + " element(s) created, " + result.getUpdatedElements( )
+                                        + " element(s) updated and " + result.getIgnoredElements( ) + " element(s) ignored.";
                                 AppLogService.info( "ImportDaemon : " + strLog );
                                 setLastRunLogs( strLog );
                                 if ( AppLogService.isDebugEnabled( ) && result.getListImportMessage( ) != null )
@@ -131,8 +126,7 @@ public class ImportDaemon extends Daemon
                                         AppLogService.debug( message.toString( ) );
                                     }
                                 }
-                                if ( result.getCreatedElements( ) > 0 || result.getUpdatedElements( ) > 0
-                                        || result.getIgnoredElements( ) > 0 )
+                                if ( result.getCreatedElements( ) > 0 || result.getUpdatedElements( ) > 0 || result.getIgnoredElements( ) > 0 )
                                 {
                                     file.delete( );
                                 }

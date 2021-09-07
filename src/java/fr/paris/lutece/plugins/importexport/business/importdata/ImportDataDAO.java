@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,6 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
 
-
 /**
  * DAO to import elements from the database<br />
  * <b>Warning, this DAO is state full !</b>
@@ -99,19 +98,21 @@ public class ImportDataDAO extends AbstractImportExportDAO
     private Locale _locale;
 
     /**
-     * Creates a new DAO to import elements. When the DAO is created, a database
-     * connection is opened. Therefore, either methods
-     * {@link #commitTransaction} or {@link #rollbackTransaction} <b>must</b> be
-     * called to close the connection
-     * @param listTableColumns The list of columns of the table to import
-     * @param strTableName The name of the table to import data in
-     * @param plugin The plugin to get the pool from
-     * @param locale The locale to display errors in
-     * @throws AppException If an error occurs during the initialization of this
-     *             DAO
+     * Creates a new DAO to import elements. When the DAO is created, a database connection is opened. Therefore, either methods {@link #commitTransaction} or
+     * {@link #rollbackTransaction} <b>must</b> be called to close the connection
+     * 
+     * @param listTableColumns
+     *            The list of columns of the table to import
+     * @param strTableName
+     *            The name of the table to import data in
+     * @param plugin
+     *            The plugin to get the pool from
+     * @param locale
+     *            The locale to display errors in
+     * @throws AppException
+     *             If an error occurs during the initialization of this DAO
      */
-    public ImportDataDAO( List<String> listTableColumns, String strTableName, Plugin plugin, Locale locale )
-            throws AppException
+    public ImportDataDAO( List<String> listTableColumns, String strTableName, Plugin plugin, Locale locale ) throws AppException
     {
         if ( StringUtils.isEmpty( strTableName ) )
         {
@@ -135,14 +136,16 @@ public class ImportDataDAO extends AbstractImportExportDAO
     }
 
     /**
-     * Insert an element to the database. The transaction is NOT committed by
-     * this method.
-     * @param listElements The list of elements to add in the statement. The
-     *            number of elements and the name of columns must be the same as
-     *            the columns associated with this DAO. <br />
+     * Insert an element to the database. The transaction is NOT committed by this method.
+     * 
+     * @param listElements
+     *            The list of elements to add in the statement. The number of elements and the name of columns must be the same as the columns associated with
+     *            this DAO. <br />
      *            Their order must also be the same.
-     * @throws AppException If an error occurred during the insertion
-     * @throws SQLException If an error occurred with the database
+     * @throws AppException
+     *             If an error occurred during the insertion
+     * @throws SQLException
+     *             If an error occurred with the database
      */
     public void insertElement( List<ImportExportElement> listElements ) throws AppException, SQLException
     {
@@ -152,15 +155,13 @@ public class ImportDataDAO extends AbstractImportExportDAO
         }
         if ( listElements == null || listElements.size( ) != _listTableColumns.size( ) )
         {
-            AppException appException = new AppException( I18nService.getLocalizedString(
-                    ERROR_MESSAGE_WRONG_LIST_ELEMENTS_SIZE, _locale ) );
+            AppException appException = new AppException( I18nService.getLocalizedString( ERROR_MESSAGE_WRONG_LIST_ELEMENTS_SIZE, _locale ) );
             int nElemNumber = 0;
             if ( listElements != null )
             {
                 nElemNumber = listElements.size( );
             }
-            AppLogService.info( appException.getMessage( ) + " expected " + _listTableColumns.size( )
-                    + " elements, found " + nElemNumber );
+            AppLogService.info( appException.getMessage( ) + " expected " + _listTableColumns.size( ) + " elements, found " + nElemNumber );
             throw appException;
         }
         _transaction.prepareStatement( getSqlInsert( ) );
@@ -172,8 +173,7 @@ public class ImportDataDAO extends AbstractImportExportDAO
             // If the two lists are not synchronized, we throw an exception to skip this item
             if ( !StringUtils.equalsIgnoreCase( tableColumn.getColumnName( ), element.getColumnName( ) ) )
             {
-                throw new AppException(
-                        I18nService.getLocalizedString( ERROR_MESSAGE_WRONG_LIST_ELEMENTS_SIZE, _locale ) );
+                throw new AppException( I18nService.getLocalizedString( ERROR_MESSAGE_WRONG_LIST_ELEMENTS_SIZE, _locale ) );
             }
             addSqlParameter( nIndex++, element.getValue( ), tableColumn.getColumnType( ) );
         }
@@ -181,14 +181,16 @@ public class ImportDataDAO extends AbstractImportExportDAO
     }
 
     /**
-     * Update an element of the database. The transaction is NOT committed by
-     * this method.
-     * @param listElements The list of elements to add in the statement. The
-     *            number of elements and the name of columns must be the same as
-     *            the columns associated with this DAO. <br />
+     * Update an element of the database. The transaction is NOT committed by this method.
+     * 
+     * @param listElements
+     *            The list of elements to add in the statement. The number of elements and the name of columns must be the same as the columns associated with
+     *            this DAO. <br />
      *            Their order must also be the same.
-     * @throws AppException If an error occurred during the update
-     * @throws SQLException If an error occurred with the database
+     * @throws AppException
+     *             If an error occurred during the update
+     * @throws SQLException
+     *             If an error occurred with the database
      */
     public void updateElement( List<ImportExportElement> listElements ) throws AppException, SQLException
     {
@@ -198,15 +200,13 @@ public class ImportDataDAO extends AbstractImportExportDAO
         }
         if ( listElements == null || listElements.size( ) != _listTableColumns.size( ) )
         {
-            AppException appException = new AppException( I18nService.getLocalizedString(
-                    ERROR_MESSAGE_WRONG_LIST_ELEMENTS_SIZE, _locale ) );
+            AppException appException = new AppException( I18nService.getLocalizedString( ERROR_MESSAGE_WRONG_LIST_ELEMENTS_SIZE, _locale ) );
             int nElemNumber = 0;
             if ( listElements != null )
             {
                 nElemNumber = listElements.size( );
             }
-            AppLogService.info( appException.getMessage( ) + " expected " + _listTableColumns.size( )
-                    + " elements, found " + nElemNumber );
+            AppLogService.info( appException.getMessage( ) + " expected " + _listTableColumns.size( ) + " elements, found " + nElemNumber );
             throw appException;
         }
         _transaction.prepareStatement( getSqlUpdate( ) );
@@ -221,8 +221,7 @@ public class ImportDataDAO extends AbstractImportExportDAO
                 // If the two lists are not synchronized, we throw an exception to skip this item
                 if ( !StringUtils.equalsIgnoreCase( tableColumn.getColumnName( ), element.getColumnName( ) ) )
                 {
-                    throw new AppException( I18nService.getLocalizedString( ERROR_MESSAGE_WRONG_LIST_ELEMENTS_SIZE,
-                            _locale ) );
+                    throw new AppException( I18nService.getLocalizedString( ERROR_MESSAGE_WRONG_LIST_ELEMENTS_SIZE, _locale ) );
                 }
                 addSqlParameter( nIndex++, element.getValue( ), tableColumn.getColumnType( ) );
             }
@@ -236,8 +235,7 @@ public class ImportDataDAO extends AbstractImportExportDAO
             {
                 if ( !StringUtils.equalsIgnoreCase( tableColumn.getColumnName( ), element.getColumnName( ) ) )
                 {
-                    throw new AppException( I18nService.getLocalizedString( ERROR_MESSAGE_WRONG_LIST_ELEMENTS_SIZE,
-                            _locale ) );
+                    throw new AppException( I18nService.getLocalizedString( ERROR_MESSAGE_WRONG_LIST_ELEMENTS_SIZE, _locale ) );
                 }
                 addSqlParameter( nIndex++, element.getValue( ), tableColumn.getColumnType( ) );
             }
@@ -247,24 +245,24 @@ public class ImportDataDAO extends AbstractImportExportDAO
 
     /**
      * Check if a row already exists in the database
-     * @param listElements The list of elements to check the existence of
+     * 
+     * @param listElements
+     *            The list of elements to check the existence of
      * @return True if the element exists, false otherwise
-     * @throws SQLException If an error occur while checking the existence of
-     *             the element
+     * @throws SQLException
+     *             If an error occur while checking the existence of the element
      */
     public boolean checkElementExists( List<ImportExportElement> listElements ) throws SQLException
     {
         if ( listElements == null || listElements.size( ) != _listTableColumns.size( ) )
         {
-            AppException appException = new AppException( I18nService.getLocalizedString(
-                    ERROR_MESSAGE_WRONG_LIST_ELEMENTS_SIZE, _locale ) );
+            AppException appException = new AppException( I18nService.getLocalizedString( ERROR_MESSAGE_WRONG_LIST_ELEMENTS_SIZE, _locale ) );
             int nElemNumber = 0;
             if ( listElements != null )
             {
                 nElemNumber = listElements.size( );
             }
-            AppLogService.info( appException.getMessage( ) + " expected " + _listTableColumns.size( )
-                    + " elements, found " + nElemNumber );
+            AppLogService.info( appException.getMessage( ) + " expected " + _listTableColumns.size( ) + " elements, found " + nElemNumber );
             throw appException;
         }
         DAOUtil daoUtil = new DAOUtil( getSqlCheckElementExists( ), _plugin );
@@ -279,7 +277,7 @@ public class ImportDataDAO extends AbstractImportExportDAO
                 bResult = true;
             }
         }
-        catch ( SQLException e )
+        catch( SQLException e )
         {
             AppLogService.error( e.getMessage( ), e );
         }
@@ -293,7 +291,9 @@ public class ImportDataDAO extends AbstractImportExportDAO
 
     /**
      * Remove every data from the table.
-     * @throws SQLException If an error occurs
+     * 
+     * @throws SQLException
+     *             If an error occurs
      */
     public void emptyTable( ) throws SQLException
     {
@@ -313,8 +313,7 @@ public class ImportDataDAO extends AbstractImportExportDAO
         }
         else
         {
-            SQLException sqlException = new SQLException( I18nService.getLocalizedString(
-                    ERROR_MESSAGE_TRANSACTION_CLOSED, _locale ) );
+            SQLException sqlException = new SQLException( I18nService.getLocalizedString( ERROR_MESSAGE_TRANSACTION_CLOSED, _locale ) );
             AppLogService.error( sqlException.getMessage( ), sqlException );
         }
     }
@@ -331,139 +330,142 @@ public class ImportDataDAO extends AbstractImportExportDAO
         }
         else
         {
-            SQLException sqlException = new SQLException( I18nService.getLocalizedString(
-                    ERROR_MESSAGE_TRANSACTION_CLOSED, _locale ) );
+            SQLException sqlException = new SQLException( I18nService.getLocalizedString( ERROR_MESSAGE_TRANSACTION_CLOSED, _locale ) );
             AppLogService.error( sqlException.getMessage( ), sqlException );
         }
     }
 
     /**
-     * Add a parameter to the current statement of the transaction according to
-     * its type.
-     * @param nIndex The index of the parameter to add
-     * @param strElementValue The value of the parameter
-     * @param columnType The type of the column
-     * @throws AppException if the value of the parameter is not valid
-     * @throws SQLException If an error occurred with the database
+     * Add a parameter to the current statement of the transaction according to its type.
+     * 
+     * @param nIndex
+     *            The index of the parameter to add
+     * @param strElementValue
+     *            The value of the parameter
+     * @param columnType
+     *            The type of the column
+     * @throws AppException
+     *             if the value of the parameter is not valid
+     * @throws SQLException
+     *             If an error occurred with the database
      */
-    private void addSqlParameter( int nIndex, String strElementValue, ColumnType columnType ) throws SQLException,
-            AppException
+    private void addSqlParameter( int nIndex, String strElementValue, ColumnType columnType ) throws SQLException, AppException
     {
         try
         {
-            switch ( columnType )
+            switch( columnType )
             {
-            case TYPE_INT:
-                if ( isStringBlankOrNull( strElementValue ) )
-                {
-                    _transaction.getStatement( ).setNull( nIndex, Types.INTEGER );
-                }
-                else
-                {
-                    _transaction.getStatement( ).setInt( nIndex, Integer.parseInt( strElementValue ) );
-                }
-                break;
-            case TYPE_LONG:
-                if ( isStringBlankOrNull( strElementValue ) )
-                {
-                    _transaction.getStatement( ).setNull( nIndex, Types.BIGINT );
-                }
-                else
-                {
-                    _transaction.getStatement( ).setLong( nIndex, Long.parseLong( strElementValue ) );
-                }
-                break;
-            case TYPE_DOUBLE:
-                if ( isStringBlankOrNull( strElementValue ) )
-                {
-                    _transaction.getStatement( ).setNull( nIndex, Types.DOUBLE );
-                }
-                else
-                {
-                    _transaction.getStatement( ).setDouble( nIndex, Double.parseDouble( strElementValue ) );
-                }
-                break;
-            case TYPE_STRING:
-                _transaction.getStatement( ).setString( nIndex, strElementValue );
-                break;
-            case TYPE_TIMESTAMP:
-                Timestamp timestamp;
-                if ( isStringBlankOrNull( strElementValue ) )
-                {
-                    timestamp = null;
-                }
-                else
-                {
-                    // If the timestamp value is numeric
-                    if ( StringUtils.isNumeric( strElementValue ) )
+                case TYPE_INT:
+                    if ( isStringBlankOrNull( strElementValue ) )
                     {
-                        timestamp = new Timestamp( Long.parseLong( strElementValue ) );
+                        _transaction.getStatement( ).setNull( nIndex, Types.INTEGER );
                     }
                     else
                     {
-                        // If the timestamp value is literal
+                        _transaction.getStatement( ).setInt( nIndex, Integer.parseInt( strElementValue ) );
+                    }
+                    break;
+                case TYPE_LONG:
+                    if ( isStringBlankOrNull( strElementValue ) )
+                    {
+                        _transaction.getStatement( ).setNull( nIndex, Types.BIGINT );
+                    }
+                    else
+                    {
+                        _transaction.getStatement( ).setLong( nIndex, Long.parseLong( strElementValue ) );
+                    }
+                    break;
+                case TYPE_DOUBLE:
+                    if ( isStringBlankOrNull( strElementValue ) )
+                    {
+                        _transaction.getStatement( ).setNull( nIndex, Types.DOUBLE );
+                    }
+                    else
+                    {
+                        _transaction.getStatement( ).setDouble( nIndex, Double.parseDouble( strElementValue ) );
+                    }
+                    break;
+                case TYPE_STRING:
+                    _transaction.getStatement( ).setString( nIndex, strElementValue );
+                    break;
+                case TYPE_TIMESTAMP:
+                    Timestamp timestamp;
+                    if ( isStringBlankOrNull( strElementValue ) )
+                    {
+                        timestamp = null;
+                    }
+                    else
+                    {
+                        // If the timestamp value is numeric
+                        if ( StringUtils.isNumeric( strElementValue ) )
+                        {
+                            timestamp = new Timestamp( Long.parseLong( strElementValue ) );
+                        }
+                        else
+                        {
+                            // If the timestamp value is literal
+                            try
+                            {
+                                timestamp = Timestamp.valueOf( strElementValue );
+                            }
+                            catch( IllegalArgumentException e )
+                            {
+                                throw new SQLException( e );
+                            }
+                        }
+                    }
+                    _transaction.getStatement( ).setTimestamp( nIndex, timestamp );
+                    break;
+                case TYPE_DATE:
+                    Date date;
+                    if ( isStringBlankOrNull( strElementValue ) )
+                    {
+                        date = null;
+                    }
+                    else
+                    {
                         try
                         {
-                            timestamp = Timestamp.valueOf( strElementValue );
+                            date = new Date( DateFormat.getDateInstance( ).parse( strElementValue ).getTime( ) );
                         }
-                        catch ( IllegalArgumentException e )
+                        catch( ParseException e )
                         {
                             throw new SQLException( e );
                         }
                     }
-                }
-                _transaction.getStatement( ).setTimestamp( nIndex, timestamp );
-                break;
-            case TYPE_DATE:
-                Date date;
-                if ( isStringBlankOrNull( strElementValue ) )
-                {
-                    date = null;
-                }
-                else
-                {
-                    try
+                    _transaction.getStatement( ).setDate( nIndex, date );
+                    break;
+                case TYPE_BYTE:
+                    byte [ ] blobItem;
+                    if ( isStringBlankOrNull( strElementValue ) )
                     {
-                        date = new Date( DateFormat.getDateInstance( ).parse( strElementValue ).getTime( ) );
+                        blobItem = null;
                     }
-                    catch ( ParseException e )
+                    else
                     {
-                        throw new SQLException( e );
+                        String strValue = strElementValue;
+                        // If the blob contains the sequence "0x" that indicates that it is encoded in hex, we remove it since we do know it is hex
+                        // Furthermore, the 'x' character is not a valid hex character, so we can safely remove it
+                        if ( strValue.startsWith( CONSTANT_HEXA_START ) )
+                        {
+                            strValue = strValue.substring( CONSTANT_HEXA_START.length( ) );
+                        }
+                        try
+                        {
+                            blobItem = Hex.decodeHex( strValue.toCharArray( ) );
+                        }
+                        catch( DecoderException e )
+                        {
+                            throw new SQLException( e );
+                        }
                     }
-                }
-                _transaction.getStatement( ).setDate( nIndex, date );
-                break;
-            case TYPE_BYTE:
-                byte[] blobItem;
-                if ( isStringBlankOrNull( strElementValue ) )
-                {
-                    blobItem = null;
-                }
-                else
-                {
-                    String strValue = strElementValue;
-                    // If the blob contains the sequence "0x" that indicates that it is encoded in hex, we remove it since we do know it is hex
-                    // Furthermore, the 'x' character is not a valid hex character, so we can safely remove it
-                    if ( strValue.startsWith( CONSTANT_HEXA_START ) )
-                    {
-                        strValue = strValue.substring( CONSTANT_HEXA_START.length( ) );
-                    }
-                    try
-                    {
-                        blobItem = Hex.decodeHex( strValue.toCharArray( ) );
-                    }
-                    catch ( DecoderException e )
-                    {
-                        throw new SQLException( e );
-                    }
-                }
-                _transaction.getStatement( ).setBytes( nIndex, blobItem );
-                break;
-            default:
-                AppLogService.error( "Unknown column type : " + columnType );
+                    _transaction.getStatement( ).setBytes( nIndex, blobItem );
+                    break;
+                default:
+                    AppLogService.error( "Unknown column type : " + columnType );
             }
         }
-        catch ( SQLException e )
+        catch( SQLException e )
         {
             AppLogService.error( e.getMessage( ), e );
             throw e;
@@ -472,117 +474,123 @@ public class ImportDataDAO extends AbstractImportExportDAO
 
     /**
      * Add a parameter to a DAOUtil according to its type.
-     * @param nIndex The index of the parameter to add
-     * @param strElementValue The value of the parameter
-     * @param columnType The type of the column
-     * @param daoUtil The DAOUtil to add the parameter to
-     * @throws AppException if the value of the parameter is not valid
-     * @throws SQLException If an error occurred with the database
+     * 
+     * @param nIndex
+     *            The index of the parameter to add
+     * @param strElementValue
+     *            The value of the parameter
+     * @param columnType
+     *            The type of the column
+     * @param daoUtil
+     *            The DAOUtil to add the parameter to
+     * @throws AppException
+     *             if the value of the parameter is not valid
+     * @throws SQLException
+     *             If an error occurred with the database
      */
-    private void addSqlParameter( int nIndex, String strElementValue, ColumnType columnType, DAOUtil daoUtil )
-            throws AppException, SQLException
+    private void addSqlParameter( int nIndex, String strElementValue, ColumnType columnType, DAOUtil daoUtil ) throws AppException, SQLException
     {
         try
         {
-            switch ( columnType )
+            switch( columnType )
             {
-            case TYPE_INT:
-                if ( isStringBlankOrNull( strElementValue ) )
-                {
-                    daoUtil.setIntNull( nIndex );
-                }
-                else
-                {
-                    daoUtil.setInt( nIndex, Integer.parseInt( strElementValue ) );
-                }
-                break;
-            case TYPE_LONG:
-                if ( isStringBlankOrNull( strElementValue ) )
-                {
-                    daoUtil.setLongNull( nIndex );
-                }
-                else
-                {
-                    daoUtil.setLong( nIndex, Long.parseLong( strElementValue ) );
-                }
-                break;
-            case TYPE_DOUBLE:
-                if ( isStringBlankOrNull( strElementValue ) )
-                {
-                    daoUtil.setDoubleNull( nIndex );
-                }
-                else
-                {
-                    daoUtil.setDouble( nIndex, Double.parseDouble( strElementValue ) );
-                }
-                break;
-            case TYPE_STRING:
-                daoUtil.setString( nIndex, strElementValue );
-                break;
-            case TYPE_TIMESTAMP:
-                Timestamp timestamp;
-                if ( isStringBlankOrNull( strElementValue ) )
-                {
-                    timestamp = null;
-                }
-                else
-                {
-                    // If the timestamp value is numeric
-                    if ( StringUtils.isNumeric( strElementValue ) )
+                case TYPE_INT:
+                    if ( isStringBlankOrNull( strElementValue ) )
                     {
-                        timestamp = new Timestamp( Long.parseLong( strElementValue ) );
+                        daoUtil.setIntNull( nIndex );
                     }
                     else
                     {
-                        // If the timestamp value is literal
+                        daoUtil.setInt( nIndex, Integer.parseInt( strElementValue ) );
+                    }
+                    break;
+                case TYPE_LONG:
+                    if ( isStringBlankOrNull( strElementValue ) )
+                    {
+                        daoUtil.setLongNull( nIndex );
+                    }
+                    else
+                    {
+                        daoUtil.setLong( nIndex, Long.parseLong( strElementValue ) );
+                    }
+                    break;
+                case TYPE_DOUBLE:
+                    if ( isStringBlankOrNull( strElementValue ) )
+                    {
+                        daoUtil.setDoubleNull( nIndex );
+                    }
+                    else
+                    {
+                        daoUtil.setDouble( nIndex, Double.parseDouble( strElementValue ) );
+                    }
+                    break;
+                case TYPE_STRING:
+                    daoUtil.setString( nIndex, strElementValue );
+                    break;
+                case TYPE_TIMESTAMP:
+                    Timestamp timestamp;
+                    if ( isStringBlankOrNull( strElementValue ) )
+                    {
+                        timestamp = null;
+                    }
+                    else
+                    {
+                        // If the timestamp value is numeric
+                        if ( StringUtils.isNumeric( strElementValue ) )
+                        {
+                            timestamp = new Timestamp( Long.parseLong( strElementValue ) );
+                        }
+                        else
+                        {
+                            // If the timestamp value is literal
+                            try
+                            {
+                                timestamp = Timestamp.valueOf( strElementValue );
+                            }
+                            catch( IllegalArgumentException e )
+                            {
+                                throw new AppException( );
+                            }
+                        }
+                    }
+                    daoUtil.setTimestamp( nIndex, timestamp );
+                    break;
+                case TYPE_DATE:
+                    Date date;
+                    if ( isStringBlankOrNull( strElementValue ) )
+                    {
+                        date = null;
+                    }
+                    else
+                    {
                         try
                         {
-                            timestamp = Timestamp.valueOf( strElementValue );
+                            date = new Date( DateFormat.getDateInstance( ).parse( strElementValue ).getTime( ) );
                         }
-                        catch ( IllegalArgumentException e )
+                        catch( ParseException e )
                         {
-                            throw new AppException( );
+                            throw new SQLException( e );
                         }
                     }
-                }
-                daoUtil.setTimestamp( nIndex, timestamp );
-                break;
-            case TYPE_DATE:
-                Date date;
-                if ( isStringBlankOrNull( strElementValue ) )
-                {
-                    date = null;
-                }
-                else
-                {
+                    daoUtil.setDate( nIndex, date );
+                    break;
+                case TYPE_BYTE:
+                    byte [ ] blobItem;
                     try
                     {
-                        date = new Date( DateFormat.getDateInstance( ).parse( strElementValue ).getTime( ) );
+                        blobItem = Hex.decodeHex( strElementValue.toCharArray( ) );
                     }
-                    catch ( ParseException e )
+                    catch( DecoderException e )
                     {
                         throw new SQLException( e );
                     }
-                }
-                daoUtil.setDate( nIndex, date );
-                break;
-            case TYPE_BYTE:
-                byte[] blobItem;
-                try
-                {
-                    blobItem = Hex.decodeHex( strElementValue.toCharArray( ) );
-                }
-                catch ( DecoderException e )
-                {
-                    throw new SQLException( e );
-                }
-                daoUtil.setBytes( nIndex, blobItem );
-                break;
-            default:
-                AppLogService.error( "Unknown column type : " + columnType );
+                    daoUtil.setBytes( nIndex, blobItem );
+                    break;
+                default:
+                    AppLogService.error( "Unknown column type : " + columnType );
             }
         }
-        catch ( SQLException e )
+        catch( SQLException e )
         {
             AppLogService.error( e.getMessage( ), e );
             throw e;
@@ -591,6 +599,7 @@ public class ImportDataDAO extends AbstractImportExportDAO
 
     /**
      * Get the SQL script to insert an element of this DAO
+     * 
      * @return The SQL script to insert an element of this DAO
      */
     private String getSqlInsert( )
@@ -627,6 +636,7 @@ public class ImportDataDAO extends AbstractImportExportDAO
 
     /**
      * Get the SQL script to update an element of this DAO
+     * 
      * @return The SQL script to update an element of this DAO
      */
     private String getSqlUpdate( )
@@ -680,8 +690,8 @@ public class ImportDataDAO extends AbstractImportExportDAO
     }
 
     /**
-     * Get the SQL query to check if an item already exist in the table of the
-     * database
+     * Get the SQL query to check if an item already exist in the table of the database
+     * 
      * @return The SQL query to execute
      */
     private String getSqlCheckElementExists( )
@@ -703,9 +713,10 @@ public class ImportDataDAO extends AbstractImportExportDAO
 
     /**
      * Check if a string is null, empty, blank or equals to the 'null' string.
-     * @param strString The string to check
-     * @return True if the string null, empty, blank or equals to the 'null'
-     *         string, false otherwise
+     * 
+     * @param strString
+     *            The string to check
+     * @return True if the string null, empty, blank or equals to the 'null' string, false otherwise
      */
     private boolean isStringBlankOrNull( String strString )
     {
@@ -713,9 +724,10 @@ public class ImportDataDAO extends AbstractImportExportDAO
     }
 
     /**
-     * Finalize the DAO. If the transaction has not been closed, then it is
-     * rolled backed and closed
-     * @throws Throwable If an exception is thrown
+     * Finalize the DAO. If the transaction has not been closed, then it is rolled backed and closed
+     * 
+     * @throws Throwable
+     *             If an exception is thrown
      */
     @Override
     protected void finalize( ) throws Throwable

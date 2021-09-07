@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,7 +53,6 @@ import org.apache.commons.lang.StringUtils;
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVParser;
 
-
 /**
  * Source to import data from CSV files.
  */
@@ -67,13 +66,13 @@ public class CSVImportSource implements IImportSource
 
     /**
      * Creates a new CSVImportSource from a file uploaded by the user
-     * @param fileItem The CSV file to read data from. The first line of the CSV
-     *            file must contain the names of columns of the database
-     * @param strCSVSeparator The CSV separator to use. If it is null or empty,
-     *            then the default CSV separator is used (which is ",")
-     * @param strCSVQuoteChar The CSV quote character to use. If it is null or
-     *            empty, then the default CSV quote character is used (which is
-     *            "\"")
+     * 
+     * @param fileItem
+     *            The CSV file to read data from. The first line of the CSV file must contain the names of columns of the database
+     * @param strCSVSeparator
+     *            The CSV separator to use. If it is null or empty, then the default CSV separator is used (which is ",")
+     * @param strCSVQuoteChar
+     *            The CSV quote character to use. If it is null or empty, then the default CSV quote character is used (which is "\"")
      */
     public CSVImportSource( FileItem fileItem, String strCSVSeparator, String strCSVQuoteChar )
     {
@@ -84,16 +83,14 @@ public class CSVImportSource implements IImportSource
             {
                 _reader = new InputStreamReader( fileItem.getInputStream( ) );
             }
-            catch ( IOException e )
+            catch( IOException e )
             {
                 AppLogService.error( e.getMessage( ), e );
             }
             if ( _reader != null )
             {
-                Character cSeparator = StringUtils.isNotEmpty( strCSVSeparator ) ? strCSVSeparator.charAt( 0 )
-                        : CSVParser.DEFAULT_SEPARATOR;
-                Character cQuoteChar = StringUtils.isNotEmpty( strCSVQuoteChar ) ? strCSVQuoteChar.charAt( 0 )
-                        : CSVParser.DEFAULT_QUOTE_CHARACTER;
+                Character cSeparator = StringUtils.isNotEmpty( strCSVSeparator ) ? strCSVSeparator.charAt( 0 ) : CSVParser.DEFAULT_SEPARATOR;
+                Character cQuoteChar = StringUtils.isNotEmpty( strCSVQuoteChar ) ? strCSVQuoteChar.charAt( 0 ) : CSVParser.DEFAULT_QUOTE_CHARACTER;
                 _csvReader = new CSVReader( _reader, cSeparator, cQuoteChar );
             }
         }
@@ -101,13 +98,13 @@ public class CSVImportSource implements IImportSource
 
     /**
      * Creates a new CSVImportSource from a file of the server
-     * @param file The CSV file to read data from. The first line of the CSV
-     *            file must contain the names of columns of the database
-     * @param strCSVSeparator The CSV separator to use. If it is null or empty,
-     *            then the default CSV separator is used (which is ",")
-     * @param strCSVQuoteChar The CSV quote character to use. If it is null or
-     *            empty, then the default CSV quote character is used (which is
-     *            "\"")
+     * 
+     * @param file
+     *            The CSV file to read data from. The first line of the CSV file must contain the names of columns of the database
+     * @param strCSVSeparator
+     *            The CSV separator to use. If it is null or empty, then the default CSV separator is used (which is ",")
+     * @param strCSVQuoteChar
+     *            The CSV quote character to use. If it is null or empty, then the default CSV quote character is used (which is "\"")
      */
     public CSVImportSource( File file, String strCSVSeparator, String strCSVQuoteChar )
     {
@@ -116,13 +113,11 @@ public class CSVImportSource implements IImportSource
             try
             {
                 _reader = new FileReader( file );
-                Character cSeparator = StringUtils.isNotEmpty( strCSVSeparator ) ? strCSVSeparator.charAt( 0 )
-                        : CSVParser.DEFAULT_SEPARATOR;
-                Character cQuoteChar = StringUtils.isNotEmpty( strCSVQuoteChar ) ? strCSVQuoteChar.charAt( 0 )
-                        : CSVParser.DEFAULT_QUOTE_CHARACTER;
+                Character cSeparator = StringUtils.isNotEmpty( strCSVSeparator ) ? strCSVSeparator.charAt( 0 ) : CSVParser.DEFAULT_SEPARATOR;
+                Character cQuoteChar = StringUtils.isNotEmpty( strCSVQuoteChar ) ? strCSVQuoteChar.charAt( 0 ) : CSVParser.DEFAULT_QUOTE_CHARACTER;
                 _csvReader = new CSVReader( _reader, cSeparator, cQuoteChar );
             }
-            catch ( FileNotFoundException e )
+            catch( FileNotFoundException e )
             {
                 AppLogService.error( e.getMessage( ), e );
             }
@@ -145,12 +140,12 @@ public class CSVImportSource implements IImportSource
         {
             return null;
         }
-        String[] strLine;
+        String [ ] strLine;
         try
         {
             strLine = _csvReader.readNext( );
         }
-        catch ( IOException e )
+        catch( IOException e )
         {
             AppLogService.error( e.getMessage( ), e );
             return null;
@@ -168,7 +163,7 @@ public class CSVImportSource implements IImportSource
             {
                 ImportExportElement element = new ImportExportElement( );
                 element.setColumnName( strColumnTitle );
-                element.setValue( strLine[i] );
+                element.setValue( strLine [i] );
                 listElements.add( element );
                 i++;
             }
@@ -193,12 +188,12 @@ public class CSVImportSource implements IImportSource
             return null;
         }
 
-        String[] strFirstLine = null;
+        String [ ] strFirstLine = null;
         try
         {
             strFirstLine = _csvReader.readNext( );
         }
-        catch ( IOException e )
+        catch( IOException e )
         {
             AppLogService.error( e.getMessage( ), e );
             return null;
@@ -222,10 +217,11 @@ public class CSVImportSource implements IImportSource
                             strTitle = strTitle.substring( 1 );
                         }
                         // We eventually remove any first character that is not a latin character
-                        else if ( strTitle.charAt( 0 ) > 255 )
-                        {
-                            strTitle = strTitle.substring( 1 );
-                        }
+                        else
+                            if ( strTitle.charAt( 0 ) > 255 )
+                            {
+                                strTitle = strTitle.substring( 1 );
+                            }
 
                         // The BOM character can only be the first character of the file
                         bIsFirst = false;
@@ -252,7 +248,7 @@ public class CSVImportSource implements IImportSource
                 _csvReader = null;
                 _reader.close( );
             }
-            catch ( IOException e )
+            catch( IOException e )
             {
                 AppLogService.error( e.getMessage( ), e );
             }

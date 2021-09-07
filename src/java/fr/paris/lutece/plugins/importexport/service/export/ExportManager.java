@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * Export manager
  */
@@ -80,19 +79,20 @@ public final class ExportManager
 
     /**
      * Do process the export of a table of the database
-     * @param strTableName The name of the database table to export
-     * @param listColumns The list of columns to export
-     * @param nXSLStylesheetId The id of the XSL export style sheet to use to
-     *            format data retrieved from the database
-     * @param plugin The plugin to get the pool of
-     * @return The string containing the formatted values of the table of the
-     *         database
+     * 
+     * @param strTableName
+     *            The name of the database table to export
+     * @param listColumns
+     *            The list of columns to export
+     * @param nXSLStylesheetId
+     *            The id of the XSL export style sheet to use to format data retrieved from the database
+     * @param plugin
+     *            The plugin to get the pool of
+     * @return The string containing the formatted values of the table of the database
      */
-    public static String doProcessExport( String strTableName, List<String> listColumns, int nXSLStylesheetId,
-            Plugin plugin )
+    public static String doProcessExport( String strTableName, List<String> listColumns, int nXSLStylesheetId, Plugin plugin )
     {
-        String strSeparator = AppPropertiesService.getProperty( PROPERTY_EXPORT_COLUMN_NAME_SEPARATOR,
-                CONSTANT_SEMICOLON );
+        String strSeparator = AppPropertiesService.getProperty( PROPERTY_EXPORT_COLUMN_NAME_SEPARATOR, CONSTANT_SEMICOLON );
         StringBuffer sbXml = new StringBuffer( XmlUtil.getXmlHeader( ) );
         Map<String, String> mapAttributes = new HashMap<String, String>( );
         StringBuilder sbColumns = new StringBuilder( );
@@ -130,26 +130,31 @@ public final class ExportManager
 
     /**
      * Register an import to be generated asynchronously
-     * @param strTableName The name of the database table to export
-     * @param listColumns The list of columns to export
-     * @param nXSLStylesheetId The id of the XSL export style sheet to use to
-     *            format data retrieved from the database
-     * @param plugin The plugin to get the pool of
-     * @param admin The admin user that started the export, or null if it has
-     *            been started by a daemon
+     * 
+     * @param strTableName
+     *            The name of the database table to export
+     * @param listColumns
+     *            The list of columns to export
+     * @param nXSLStylesheetId
+     *            The id of the XSL export style sheet to use to format data retrieved from the database
+     * @param plugin
+     *            The plugin to get the pool of
+     * @param admin
+     *            The admin user that started the export, or null if it has been started by a daemon
      */
-    public static void registerAsynchronousExport( String strTableName, List<String> listColumns, int nXSLStylesheetId,
-            Plugin plugin, AdminUser admin )
+    public static void registerAsynchronousExport( String strTableName, List<String> listColumns, int nXSLStylesheetId, Plugin plugin, AdminUser admin )
     {
-        RunnableExportService exportService = new RunnableExportService( strTableName, listColumns, nXSLStylesheetId,
-                plugin, Integer.toString( admin.getUserId( ) ) );
+        RunnableExportService exportService = new RunnableExportService( strTableName, listColumns, nXSLStylesheetId, plugin,
+                Integer.toString( admin.getUserId( ) ) );
         _mapRunningImports.put( admin.getUserId( ), exportService );
         ThreadLauncherDaemon.addItemToQueue( exportService, strTableName, plugin );
     }
 
     /**
      * Check if an admin user has an export processing
-     * @param nAdminId The id of the admin user
+     * 
+     * @param nAdminId
+     *            The id of the admin user
      * @return True if the admin user has an export processing, false otherwise
      */
     public static boolean hasExportInProcess( int nAdminId )
@@ -167,9 +172,10 @@ public final class ExportManager
 
     /**
      * Get the result of an export
-     * @param admin The admin user that started the export
-     * @return The URL of the generated file relative from the root of the
-     *         webapp, or null if no export was found
+     * 
+     * @param admin
+     *            The admin user that started the export
+     * @return The URL of the generated file relative from the root of the webapp, or null if no export was found
      */
     public static String getExportResult( AdminUser admin )
     {
@@ -186,20 +192,23 @@ public final class ExportManager
     }
 
     /**
-     * Do process an export into a file of the file system. If the file can not
-     * be written into, then the export is not processed.
-     * @param strOutputFilePath The path of the file to save the export into
-     * @param strTableName The name of the database table to export
-     * @param listColumns The list of columns to export
-     * @param nXSLStylesheetId The id of the XSL export style sheet to use to
-     *            format data retrieved from the database
-     * @param plugin The plugin to get the pool of
-     * @return True if the export succeeded and the file was written, false
-     *         otherwise
+     * Do process an export into a file of the file system. If the file can not be written into, then the export is not processed.
+     * 
+     * @param strOutputFilePath
+     *            The path of the file to save the export into
+     * @param strTableName
+     *            The name of the database table to export
+     * @param listColumns
+     *            The list of columns to export
+     * @param nXSLStylesheetId
+     *            The id of the XSL export style sheet to use to format data retrieved from the database
+     * @param plugin
+     *            The plugin to get the pool of
+     * @return True if the export succeeded and the file was written, false otherwise
      * @see #doProcessExport(String, List, int, Plugin)
      */
-    public static boolean doProcessExportIntoFile( String strOutputFilePath, String strTableName,
-            List<String> listColumns, int nXSLStylesheetId, Plugin plugin )
+    public static boolean doProcessExportIntoFile( String strOutputFilePath, String strTableName, List<String> listColumns, int nXSLStylesheetId,
+            Plugin plugin )
     {
         FileWriter fileWriter = null;
         BufferedWriter bufferedWriter = null;
@@ -240,7 +249,7 @@ public final class ExportManager
                 bResult = true;
             }
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
             AppLogService.error( e.getMessage( ), e );
         }
@@ -253,7 +262,7 @@ public final class ExportManager
                 {
                     bufferedWriter.close( );
                 }
-                catch ( IOException e )
+                catch( IOException e )
                 {
                     AppLogService.error( e.getMessage( ), e );
                 }
@@ -264,7 +273,7 @@ public final class ExportManager
                 {
                     fileWriter.close( );
                 }
-                catch ( IOException e )
+                catch( IOException e )
                 {
                     AppLogService.error( e.getMessage( ), e );
                 }
