@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Abstract DAO to manage imports and exports
@@ -57,6 +57,7 @@ public abstract class AbstractImportExportDAO
     private static final String CONSTANT_SQL_INT = "int";
     private static final String CONSTANT_SQL_LONG = "bigint";
     private static final String CONSTANT_SQL_DOUBLE = "double";
+    private static final String CONSTANT_SQL_FLOAT = "float";
     private static final String CONSTANT_SQL_REAL = "real";
     private static final String CONSTANT_SQL_VARCHAR = "varchar";
     private static final String CONSTANT_SQL_CHARACTER = "character";
@@ -199,7 +200,7 @@ public abstract class AbstractImportExportDAO
                             columnType = ColumnType.TYPE_DATE;
                         }
                         else
-                            if ( StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_DOUBLE )
+                            if ( StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_DOUBLE ) || StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_FLOAT )
                                     || StringUtils.contains( strColumnTypeSearch, CONSTANT_SQL_REAL ) )
                             {
                                 columnType = ColumnType.TYPE_DOUBLE;
