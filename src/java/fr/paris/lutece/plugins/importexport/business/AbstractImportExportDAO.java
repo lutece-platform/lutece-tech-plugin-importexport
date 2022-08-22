@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Abstract DAO to manage imports and exports

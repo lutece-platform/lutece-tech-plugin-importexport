@@ -50,7 +50,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * DAO to export data from a database table

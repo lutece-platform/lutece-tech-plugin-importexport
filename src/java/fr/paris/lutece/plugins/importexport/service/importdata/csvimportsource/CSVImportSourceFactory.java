@@ -40,7 +40,7 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import java.io.File;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Factory for CSV import sources
