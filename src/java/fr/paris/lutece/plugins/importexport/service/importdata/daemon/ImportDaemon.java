@@ -44,7 +44,7 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import java.io.File;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Daemon to import data
